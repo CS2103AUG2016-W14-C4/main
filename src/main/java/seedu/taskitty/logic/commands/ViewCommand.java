@@ -4,13 +4,13 @@ package seedu.taskitty.logic.commands;
 /**
  * Lists all tasks in the task manager to the user.
  */
-public class ListCommand extends Command {
+public class ViewCommand extends Command {
 
-    public static final String COMMAND_WORD = "list";
+    public static final String COMMAND_WORD = "view";
 
-    public static final String MESSAGE_SUCCESS = "Listed all tasks";
+    public static final String MESSAGE_SUCCESS = "Shown all tasks";
 
-    public ListCommand() {}
+    public ViewCommand() {}
 
     @Override
     public CommandResult execute() {

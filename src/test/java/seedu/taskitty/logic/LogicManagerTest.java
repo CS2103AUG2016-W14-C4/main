@@ -207,7 +207,7 @@ public class LogicManagerTest {
 
 
     @Test
-    public void execute_list_showsAllTasks() throws Exception {
+    public void execute_view_showsAllTasks() throws Exception {
         // prepare expectations
         TestDataHelper helper = new TestDataHelper();
         TaskManager expectedAB = helper.generateTaskManager(2);
@@ -216,8 +216,8 @@ public class LogicManagerTest {
         // prepare address book state
         helper.addToModel(model, 2);
 
-        assertCommandBehavior("list",
-                ListCommand.MESSAGE_SUCCESS,
+        assertCommandBehavior("view",
+                ViewCommand.MESSAGE_SUCCESS,
                 expectedAB,
                 expectedList);
     }
