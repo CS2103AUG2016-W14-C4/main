@@ -75,11 +75,11 @@ interface and exposes its functionality using the `LogicManager.java` class.<br>
 <img src="images/LogicClassDiagram.png" width="800"><br>
 
 The _Sequence Diagram_ below shows how the components interact for the scenario where the user issues the
-command `delete 3`.
+command `delete 1`.
 
 <img src="images\SDforDeletePerson.png" width="800">
 
->Note how the `Model` simply raises a `AddressBookChangedEvent` when the Address Book data are changed,
+>Note how the `Model` simply raises a `TaskManagerChangedEvent` when the TaskManager data are changed,
  instead of asking the `Storage` to save the updates to the hard disk.
 
 The diagram below shows how the `EventsCenter` reacts to that event, which eventually results in the updates
@@ -116,7 +116,7 @@ The `UI` component,
 
 <img src="images/LogicClassDiagram.png" width="800"><br>
 
-**API** : [`Logic.java`](../src/main/java/seedu/address/logic/Logic.java)
+**API** : [`Logic.java`](../src/main/java/seedu/taskitty/logic/Logic.java)
 
 1. `Logic` uses the `Parser` class to parse the user command.
 2. This results in a `Command` object which is executed by the `LogicManager`.
@@ -152,7 +152,7 @@ The `Storage` component,
 
 ### Common classes
 
-Classes used by multiple components are in the `seedu.addressbook.commons` package.
+Classes used by multiple components are in the `seedu.taskitty.commons` package.
 
 ## Implementation
 
