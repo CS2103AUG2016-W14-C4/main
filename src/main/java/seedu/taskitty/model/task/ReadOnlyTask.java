@@ -54,5 +54,11 @@ public interface ReadOnlyTask {
             return buffer.substring(0, buffer.length() - separator.length());
         }
     }
+    
+    /**
+     * Returns the type of task that is created: Todo, Deadline, or Event.
+     * @return
+     */
+	TaskType getTaskType();
 
 }

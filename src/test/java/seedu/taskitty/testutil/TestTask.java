@@ -15,6 +15,7 @@ public class TestTask implements ReadOnlyTask {
     private TaskTime endTime;
     private boolean isDone;
     private UniqueTagList tags;
+    private TaskType taskType;
 
     public TestTask() {
         tags = new UniqueTagList();
@@ -38,6 +39,10 @@ public class TestTask implements ReadOnlyTask {
     
     public void setEndTime(TaskTime endTime) {
         this.endTime = endTime;
+    }
+    
+    public void setTaskType(TaskType taskType) {
+    	this.taskType = taskType;
     }
 
     @Override
@@ -97,5 +102,10 @@ public class TestTask implements ReadOnlyTask {
 	@Override
 	public boolean getIsDone() {
 		return isDone;
+	}
+
+	@Override
+	public TaskType getTaskType() {
+		return taskType;
 	}
 }
