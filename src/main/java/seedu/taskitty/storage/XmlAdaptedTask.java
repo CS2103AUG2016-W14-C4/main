@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * JAXB-friendly version of the Person.
+ * JAXB-friendly version of the Task.
  */
 public class XmlAdaptedTask {
 
@@ -24,9 +24,12 @@ public class XmlAdaptedTask {
     private String startTime;
     @XmlElement
     private String endTime;
-
+    @XmlElement
+    private boolean isDone;
     @XmlElement
     private List<XmlAdaptedTag> tagged = new ArrayList<>();
+    @XmlElement(required = true)
+    private TaskType taskType;
 
     /**
      * No-arg constructor for JAXB use.
@@ -45,6 +48,8 @@ public class XmlAdaptedTask {
         TaskDate sourceEndDate = source.getEndDate();
         TaskTime sourceStartTime = source.getStartTime();
         TaskTime sourceEndTime = source.getEndTime();
+        boolean sourceIsDone = source.getIsDone();
+        TaskType sourceTaskType = source.getTaskType();
         if (sourceStartDate != null) {
             startDate = sourceStartDate.toString();
         }
@@ -57,10 +62,16 @@ public class XmlAdaptedTask {
         if (sourceEndTime != null) {
             endTime = sourceEndTime.toString();
         }
+        	taskType = sourceTaskType;
+        	isDone = sourceIsDone;
         tagged = new ArrayList<>();
         for (Tag tag : source.getTags()) {
             tagged.add(new XmlAdaptedTag(tag));
         }
+    }
+    
+    public TaskType getTaskType() {
+    	return taskType;
     }
 
     /**
@@ -95,6 +106,18 @@ public class XmlAdaptedTask {
             endTime = new TaskTime(this.endTime);
         }
         final UniqueTagList tags = new UniqueTagList(taskTags);
-        return new Task(name, startDate, startTime, endDate, endTime, tags);
+        
+        final TaskType taskType = this.taskType;
+        
+        switch(taskType) {
+        case TODO:
+        	return new Task(name, tags);
+        case DEADLINE:
+        	return new Task(name, endDate, endTime, tags);
+        case EVENT:
+        	return new Task(name, startDate, startTime, endDate, endTime, tags);
+        default:
+        	return new Task(name, tags);
+        }
     }
 }

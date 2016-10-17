@@ -4,6 +4,7 @@ import seedu.taskitty.commons.exceptions.IllegalValueException;
 import seedu.taskitty.commons.util.CollectionUtil;
 import seedu.taskitty.model.tag.UniqueTagList;
 
+
 import java.util.Objects;
 
 /**
@@ -34,6 +35,8 @@ public class Task implements ReadOnlyTask {
     private TaskTime endTime;
     private boolean isDone;
 
+    private TaskType taskType;
+
     private UniqueTagList tags;
 
     /**
@@ -46,6 +49,7 @@ public class Task implements ReadOnlyTask {
         
         this.name = name;
         this.tags = new UniqueTagList(tags);
+        this.taskType = TaskType.TODO;
     }
     
     /**
@@ -60,6 +64,7 @@ public class Task implements ReadOnlyTask {
         this.endDate = endDate;
         this.endTime = endTime;
         this.tags = new UniqueTagList(tags);
+        this.taskType = TaskType.DEADLINE;
     }
     
     /**
@@ -75,6 +80,7 @@ public class Task implements ReadOnlyTask {
         this.endDate = endDate;
         this.endTime = endTime;
         this.tags = new UniqueTagList(tags); // protect internal tags from changes in the arg list
+        this.taskType = TaskType.EVENT;
     }
 
     /**
@@ -114,6 +120,12 @@ public class Task implements ReadOnlyTask {
     public UniqueTagList getTags() {
         return new UniqueTagList(tags);
     }
+    
+    @Override
+    public TaskType getTaskType() {
+    	return taskType;
+    }
+    
 
     /**
      * Replaces this person's tags with the tags in the argument tag list.
@@ -122,6 +134,16 @@ public class Task implements ReadOnlyTask {
         tags.setTags(replacement);
     }
     
+    /** 
+     * Renames task with new name. For edit command.
+     */
+    public void setNewName(String newName) {
+    	try {	
+    		this.name = new Name(newName);
+    	} catch (IllegalValueException e) {
+    		e.printStackTrace();
+    	}
+    }
     /** 
      * Marks task as done.
      */

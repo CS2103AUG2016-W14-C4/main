@@ -5,6 +5,7 @@ import seedu.taskitty.model.ReadOnlyTaskManager;
 import seedu.taskitty.model.tag.Tag;
 import seedu.taskitty.model.tag.UniqueTagList;
 import seedu.taskitty.model.task.ReadOnlyTask;
+import seedu.taskitty.model.task.TaskType;
 import seedu.taskitty.model.task.UniqueTaskList;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -15,13 +16,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * An Immutable AddressBook that is serializable to XML format
+ * An Immutable Task Manger that is serializable to XML format
  */
 @XmlRootElement(name = "taskmanager")
 public class XmlSerializableTaskManager implements ReadOnlyTaskManager {
 
     @XmlElement
     private List<XmlAdaptedTask> tasks;
+    
     @XmlElement
     private List<Tag> tags;
 
@@ -84,5 +86,6 @@ public class XmlSerializableTaskManager implements ReadOnlyTaskManager {
     public List<Tag> getTagList() {
         return Collections.unmodifiableList(tags);
     }
+
 
 }
