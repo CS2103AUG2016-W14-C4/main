@@ -1,6 +1,11 @@
 package seedu.taskitty.ui;
-
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -11,10 +16,17 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import seedu.taskitty.commons.core.Config;
 import seedu.taskitty.commons.core.GuiSettings;
+import seedu.taskitty.commons.core.UnmodifiableObservableList;
 import seedu.taskitty.commons.events.ui.ExitAppRequestEvent;
+import seedu.taskitty.commons.exceptions.IllegalValueException;
 import seedu.taskitty.logic.Logic;
 import seedu.taskitty.model.UserPrefs;
+import seedu.taskitty.model.tag.UniqueTagList;
+import seedu.taskitty.model.task.Name;
 import seedu.taskitty.model.task.ReadOnlyTask;
+import seedu.taskitty.model.task.Task;
+import seedu.taskitty.model.task.TaskDate;
+import seedu.taskitty.model.task.TaskTime;
 
 /**
  * The Main Window. Provides the basic application layout containing
@@ -30,21 +42,22 @@ public class MainWindow extends UiPart {
     private Logic logic;
 
     // Independent Ui parts residing in this Ui container
-    private BrowserPanel browserPanel;
+
     private TaskListPanel taskListPanel;
     private DeadlineListPanel deadlineListPanel;
+    private EventListPanel eventListPanel;
     private ResultDisplay resultDisplay;
     private StatusBarFooter statusBarFooter;
     private CommandBox commandBox;
     private Config config;
     private UserPrefs userPrefs;
-
+   
     // Handles to elements of this Ui container
     private VBox rootLayout;
     private Scene scene;
 
     private String taskManagerName;
-
+    
     @FXML
     private AnchorPane browserPlaceholder;
 
@@ -59,6 +72,9 @@ public class MainWindow extends UiPart {
     
     @FXML
     private AnchorPane deadlineListPanelPlaceholder;
+    
+    @FXML 
+    private AnchorPane eventListPanelPlaceholder;
 
     @FXML
     private AnchorPane resultDisplayPlaceholder;
@@ -115,9 +131,11 @@ public class MainWindow extends UiPart {
     }
 
     void fillInnerParts() {
-        browserPanel = BrowserPanel.load(browserPlaceholder);
-        taskListPanel = TaskListPanel.load(primaryStage, getTaskListPlaceholder(), logic.getFilteredTaskList());
-        deadlineListPanel = DeadlineListPanel.load(primaryStage, getDeadlineListPlaceholder(), logic.getFilteredTaskList());
+    	
+    	
+        taskListPanel = TaskListPanel.load(primaryStage, getTaskListPlaceholder(), logic.getFilteredTodoTaskList());
+        deadlineListPanel = DeadlineListPanel.load(primaryStage, getDeadlineListPlaceholder(), logic.getFilteredDeadlineTaskList());
+        eventListPanel = EventListPanel.load(primaryStage, getEventListPlaceholder(), logic.getFilteredEventTaskList());
         resultDisplay = ResultDisplay.load(primaryStage, getResultDisplayPlaceholder());
         statusBarFooter = StatusBarFooter.load(primaryStage, getStatusbarPlaceholder(), config.getTaskManagerFilePath());
         commandBox = CommandBox.load(primaryStage, getCommandBoxPlaceholder(), resultDisplay, logic);
@@ -125,6 +143,10 @@ public class MainWindow extends UiPart {
 
     private AnchorPane getCommandBoxPlaceholder() {
         return commandBoxPlaceholder;
+    }
+    
+    private AnchorPane getEventListPlaceholder() {
+    	return eventListPanelPlaceholder;
     }
 
     private AnchorPane getStatusbarPlaceholder() {
@@ -201,12 +223,9 @@ public class MainWindow extends UiPart {
     public DeadlineListPanel getDeadlineListPanel() {
         return this.deadlineListPanel;
     }
-
-    public void loadTaskPage(ReadOnlyTask task) {
-        browserPanel.loadTaskPage(task);
+    
+    public EventListPanel getEventListPanel() {
+    	return this.eventListPanel;
     }
 
-    public void releaseResources() {
-        browserPanel.freeResources();
-    }
 }
