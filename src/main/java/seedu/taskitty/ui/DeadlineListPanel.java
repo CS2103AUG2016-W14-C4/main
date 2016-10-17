@@ -13,11 +13,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import seedu.taskitty.commons.core.LogsCenter;
+import seedu.taskitty.commons.events.ui.DeadlinePanelSelectionChangedEvent;
 import seedu.taskitty.commons.events.ui.TaskPanelSelectionChangedEvent;
 import seedu.taskitty.model.task.ReadOnlyTask;
-
-// Dummy Placeholder for Deadline List Panel
-// TO BE UPDATED
 
 public class DeadlineListPanel extends UiPart{
     private final Logger logger = LogsCenter.getLogger(DeadlineListPanel.class);
@@ -47,22 +45,22 @@ public class DeadlineListPanel extends UiPart{
         this.placeHolderPane = pane;
     }
     
-    public static DeadlineListPanel load(Stage primaryStage, AnchorPane personListPlaceholder,
-            ObservableList<ReadOnlyTask> personList) {
+    public static DeadlineListPanel load(Stage primaryStage, AnchorPane taskListPlaceholder,
+            ObservableList<ReadOnlyTask> deadlineList) {
         DeadlineListPanel deadlineListPanel =
-                UiPartLoader.loadUiPart(primaryStage, personListPlaceholder, new DeadlineListPanel());
-        deadlineListPanel.configure(personList);
+                UiPartLoader.loadUiPart(primaryStage, taskListPlaceholder, new DeadlineListPanel());
+        deadlineListPanel.configure(deadlineList);
         return deadlineListPanel;
     }
 
-    private void configure(ObservableList<ReadOnlyTask> personList) {
-        setConnections(personList);
+    private void configure(ObservableList<ReadOnlyTask> deadlineList) {
+        setConnections(deadlineList);
         addToPlaceholder();
     }
     
-    private void setConnections(ObservableList<ReadOnlyTask> personList) {
-        deadlineListView.setItems(personList);
-        deadlineListView.setCellFactory(listView -> new PersonListViewCell());
+    private void setConnections(ObservableList<ReadOnlyTask> deadlineList) {
+        deadlineListView.setItems(deadlineList);
+        deadlineListView.setCellFactory(listView -> new TaskListViewCell());
         setEventHandlerForSelectionChangeEvent();
     }
 
@@ -74,8 +72,8 @@ public class DeadlineListPanel extends UiPart{
     private void setEventHandlerForSelectionChangeEvent() {
         deadlineListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                logger.fine("Selection in person list panel changed to : '" + newValue + "'");
-                raise(new TaskPanelSelectionChangedEvent(newValue));
+                logger.fine("Selection in deadline list panel changed to : '" + newValue + "'");
+                raise(new DeadlinePanelSelectionChangedEvent(newValue));
             }
         });
     }
@@ -87,20 +85,20 @@ public class DeadlineListPanel extends UiPart{
         });
     }
 
-    class PersonListViewCell extends ListCell<ReadOnlyTask> {
+    class TaskListViewCell extends ListCell<ReadOnlyTask> {
 
-        public PersonListViewCell() {
+        public TaskListViewCell() {
         }
 
         @Override
-        protected void updateItem(ReadOnlyTask person, boolean empty) {
-            super.updateItem(person, empty);
+        protected void updateItem(ReadOnlyTask task, boolean empty) {
+            super.updateItem(task, empty);
 
-            if (empty || person == null) {
+            if (empty || task == null) {
                 setGraphic(null);
                 setText(null);
             } else {
-                setGraphic(TaskCard.load(person, getIndex() + 1).getLayout());
+                setGraphic(TaskCard.load(task, getIndex() + 1).getLayout());
             }
         }
     }

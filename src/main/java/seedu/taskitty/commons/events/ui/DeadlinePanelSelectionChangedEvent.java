@@ -4,14 +4,14 @@ import seedu.taskitty.commons.events.BaseEvent;
 import seedu.taskitty.model.task.ReadOnlyTask;
 
 /**
- * Represents a selection change in the Task List Panel
+ * Represents a selection change in the Deadline List Panel
  */
-public class TaskPanelSelectionChangedEvent extends BaseEvent {
+public class DeadlinePanelSelectionChangedEvent extends BaseEvent {
 
 
     private final ReadOnlyTask newSelection;
 
-    public TaskPanelSelectionChangedEvent(ReadOnlyTask newSelection){
+    public DeadlinePanelSelectionChangedEvent(ReadOnlyTask newSelection){
         this.newSelection = newSelection;
     }
 
