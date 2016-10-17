@@ -3,6 +3,7 @@ package seedu.taskitty.logic.commands;
 import java.util.HashSet;
 import java.util.Set;
 
+import javafx.collections.ObservableList;
 import seedu.taskitty.commons.core.Messages;
 import seedu.taskitty.commons.core.UnmodifiableObservableList;
 import seedu.taskitty.commons.exceptions.IllegalValueException;
@@ -23,55 +24,79 @@ import seedu.taskitty.model.task.UniqueTaskList.TaskNotFoundException;
 public class EditCommand extends Command{
     
     public static final String COMMAND_WORD = "edit";
+    
+    public static final String CATEGORY_CHARS = "t|d|e";
+    
+    public static final int DEFAULT_INDEX = 0;
 
     public static final String MESSAGE_USAGE = COMMAND_WORD 
-            + ": Edits the floating task identified by the index number used in the last task listing.\n "
-            + "Parameters: NAME [t/TAG]...\n"
-            + "Example: " + COMMAND_WORD
-            + " 1 finish CS2103T";
+            + ": Edits the floating task identified by the category character and index number used in the last task listing.\n "
+            + "Parameters: CATEGORY (default to 't' if not given or incorrect) INDEX (must be a positive integer)\n NEW_NAME (must be alphanumeric)"
+            + "Example: " + COMMAND_WORD + " " + CATEGORY_CHARS + " 1 finish CS2103T";
 
     public static final String MESSAGE_SUCCESS = "Task edited: %1$s";
     public static final String MESSAGE_DUPLICATE_TASK = "This task already exists in the task manager";
 
+    public final int categoryIndex;
     public final int targetIndex;
 
-    private final Task toEdit;
+    private final String newName;
 
     /**
      * Convenience constructor using raw values.
      *
      * @throws IllegalValueException if any of the raw values are invalid
      */
-    public EditCommand(String name, Set<String> tags, int targetIndex)
+    public EditCommand(String name, int targetIndex, int categoryIndex)
             throws IllegalValueException {
-        this.targetIndex = targetIndex;
-        final Set<Tag> tagSet = new HashSet<>();
-        for (String tagName : tags) {
-            tagSet.add(new Tag(tagName));
-        }
-        this.toEdit = new Task(
-                new Name(name),
-                null,
-                null,
-                null,
-                null,
-                new UniqueTagList(tagSet)
-        );
+        this.newName = name;
+    	this.targetIndex = targetIndex;
+        this.categoryIndex = categoryIndex;
+     
+    }
+    
+    /**
+     * @throws IllegalValueException 
+     * 
+     */
+    public EditCommand(String name, int targetIndex) throws IllegalValueException {
+        // default to Todo category if no given category
+        this(name, targetIndex, DEFAULT_INDEX);
     }
     
     @Override
     public CommandResult execute() {
-        UnmodifiableObservableList<ReadOnlyTask> lastShownList = model.getFilteredTaskList();
+    	assert categoryIndex >= 0 && categoryIndex < 3;
+        ObservableList<ReadOnlyTask> lastShownList;
+        switch (categoryIndex) {
+        case 0:
+        	lastShownList = model.getFilteredTodoTaskList();
+        	break;
+        case 1:
+        	lastShownList = model.getFilteredDeadlineTaskList();
+        	break;
+        case 2:
+        	lastShownList = model.getFilteredEventTaskList();
+        default:
+        	lastShownList = model.getFilteredTodoTaskList();
+        	break;
+        }
         if (lastShownList.size() < targetIndex) {
+        	model.removeUnchangedState();
             indicateAttemptToExecuteIncorrectCommand();
-            model.removeUnchangedState();
-            return new CommandResult(Messages.MESSAGE_INVALID_TASK_DISPLAYED_INDEX);
+            return new CommandResult(Messages.MESSAGE_INVALID_TASK_DISPLAYED_INDEX); 
+        }
+        
+        if (!newName.matches(Name.NAME_VALIDATION_REGEX_FORMAT)) {
+        	model.removeUnchangedState();
+        	indicateAttemptToExecuteIncorrectCommand();
+        	return new CommandResult(Name.MESSAGE_NAME_CONSTRAINTS);
         }
 
         ReadOnlyTask taskToEdit = lastShownList.get(targetIndex - 1);
 
         try {
-            model.editTask(taskToEdit, toEdit, targetIndex - 1);
+            model.editTask(taskToEdit, newName);
         } catch (UniqueTaskList.DuplicateTaskException e) {
             model.removeUnchangedState();
             return new CommandResult(MESSAGE_DUPLICATE_TASK);
@@ -80,7 +105,7 @@ public class EditCommand extends Command{
             assert false : "The target task cannot be missing";
         }
         
-        return new CommandResult(String.format(MESSAGE_SUCCESS, toEdit));
+        return new CommandResult(String.format(MESSAGE_SUCCESS, taskToEdit));
     }
 
     @Override

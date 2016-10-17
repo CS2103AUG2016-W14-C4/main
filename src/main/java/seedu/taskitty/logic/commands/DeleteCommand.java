@@ -1,12 +1,13 @@
 package seedu.taskitty.logic.commands;
 
+import javafx.collections.ObservableList;
 import seedu.taskitty.commons.core.Messages;
 import seedu.taskitty.commons.core.UnmodifiableObservableList;
 import seedu.taskitty.model.task.ReadOnlyTask;
 import seedu.taskitty.model.task.UniqueTaskList.TaskNotFoundException;
 
 /**
- * Deletes a task identified using it's last displayed index from the task manager.
+ * Deletes a task identified using it's last displayed index from the task Manager under the specified category.
  */
 public class DeleteCommand extends Command {
 
@@ -43,10 +44,24 @@ public class DeleteCommand extends Command {
     @Override
     public CommandResult execute() {
         assert categoryIndex >= 0 && categoryIndex < 3;
-        UnmodifiableObservableList<ReadOnlyTask> lastShownList = model.getFilteredTaskList();
+        ObservableList<ReadOnlyTask> lastShownList;
+        switch (categoryIndex) {
+        case 0:
+        	lastShownList = model.getFilteredTodoTaskList();
+        	break;
+        case 1:
+        	lastShownList = model.getFilteredDeadlineTaskList();
+        	break;
+        case 2:
+        	lastShownList = model.getFilteredEventTaskList();
+        default:
+        	lastShownList = model.getFilteredTodoTaskList();
+        	break;
+        }
         if (lastShownList.size() < targetIndex) {
+        	System.out.println(lastShownList.size());
+        	model.removeUnchangedState();
             indicateAttemptToExecuteIncorrectCommand();
-            model.removeUnchangedState();
             return new CommandResult(Messages.MESSAGE_INVALID_TASK_DISPLAYED_INDEX);
         }
 
