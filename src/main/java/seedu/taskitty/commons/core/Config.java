@@ -15,6 +15,8 @@ public class Config {
     private Level logLevel = Level.INFO;
     private String userPrefsFilePath = "preferences.json";
     private String taskManagerFilePath = "data/taskmanager.xml";
+    private String deadlineManagerFilePath = "data/deadlinemanager.xml";
+    private String eventManagerFilePath = "data/eventmanager.xml";
     private String taskManagerName = "MyTasks";
 
 
@@ -48,9 +50,25 @@ public class Config {
     public String getTaskManagerFilePath() {
         return taskManagerFilePath;
     }
+    
+    public String getDeadlineManagerFilePath() {
+        return deadlineManagerFilePath;
+    }
+    
+    public String getEventManagerFilePath() {
+        return eventManagerFilePath;
+    }
 
     public void setTaskManagerFilePath(String taskManagerFilePath) {
         this.taskManagerFilePath = taskManagerFilePath;
+    }
+    
+    public void setDeadlineManagerFilePath(String taskManagerFilePath) {
+        this.deadlineManagerFilePath = taskManagerFilePath;
+    }
+    
+    public void setEventManagerFilePath(String taskManagerFilePath) {
+        this.eventManagerFilePath = taskManagerFilePath;
     }
 
     public String getTaskManagerName() {

@@ -15,6 +15,7 @@ public class Task implements ReadOnlyTask {
     public static final int TASK_COMPONENT_INDEX_NAME = 0;
     public static final int TASK_COMPONENT_COUNT = 1;
     
+    
     public static final int DEADLINE_COMPONENT_INDEX_NAME = 0;
     public static final int DEADLINE_COMPONENT_INDEX_END_DATE = 1;
     public static final int DEADLINE_COMPONENT_INDEX_END_TIME = 2;
@@ -33,6 +34,7 @@ public class Task implements ReadOnlyTask {
     private TaskDate endDate;
     private TaskTime endTime;
     private boolean isDone;
+    private int numArgs;
 
     private UniqueTagList tags;
 
@@ -46,6 +48,7 @@ public class Task implements ReadOnlyTask {
         
         this.name = name;
         this.tags = new UniqueTagList(tags);
+        numArgs = TASK_COMPONENT_COUNT;
     }
     
     /**
@@ -60,6 +63,7 @@ public class Task implements ReadOnlyTask {
         this.endDate = endDate;
         this.endTime = endTime;
         this.tags = new UniqueTagList(tags);
+        numArgs = DEADLINE_COMPONENT_COUNT;
     }
     
     /**
@@ -75,6 +79,7 @@ public class Task implements ReadOnlyTask {
         this.endDate = startDate;
         this.endTime = endTime;
         this.tags = new UniqueTagList(tags); // protect internal tags from changes in the arg list
+        numArgs = EVENT_COMPONENT_COUNT;
     }
 
     /**
@@ -113,6 +118,11 @@ public class Task implements ReadOnlyTask {
     @Override
     public UniqueTagList getTags() {
         return new UniqueTagList(tags);
+    }
+    
+    @Override
+    public int getNumArgs() {
+        return numArgs;
     }
 
     /**

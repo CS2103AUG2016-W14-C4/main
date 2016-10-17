@@ -14,9 +14,21 @@ import java.util.Set;
 public interface Model {
     /** Clears existing backing model and replaces with the provided new data. */
     void resetData(ReadOnlyTaskManager newData);
+    
+    /** Clears existing backing model and replaces with the provided new data. */
+    void resetData(ReadOnlyDeadlineManager newData);
+    
+    /** Clears existing backing model and replaces with the provided new data. */
+    void resetData(ReadOnlyEventManager newData);
 
     /** Returns the TaskManager */
     ReadOnlyTaskManager getTaskManager();
+    
+    /** Returns the TaskManager */
+    ReadOnlyDeadlineManager getDeadlineManager();
+    
+    /** Returns the TaskManager */
+    ReadOnlyEventManager getEventManager();
 
     /** Deletes the given task. */
     void deleteTask(ReadOnlyTask target) throws UniqueTaskList.TaskNotFoundException;
@@ -40,13 +52,31 @@ public interface Model {
     /** Removes the current state saved when an invalid command is given */
     void removeUnchangedState();
     
-    /** Returns the filtered task list as an {@code UnmodifiableObservableList<ReadOnlyPerson>} */
+    /** Returns the filtered task list as an {@code UnmodifiableObservableList<ReadOnlyTask>} */
     UnmodifiableObservableList<ReadOnlyTask> getFilteredTaskList();
+    
+    /** Returns the filtered deadline list as an {@code UnmodifiableObservableList<ReadOnlyTask>} */
+    UnmodifiableObservableList<ReadOnlyTask> getFilteredDeadlineList();
+    
+    /** Returns the filtered event list as an {@code UnmodifiableObservableList<ReadOnlyTask>} */
+    UnmodifiableObservableList<ReadOnlyTask> getFilteredEventList();
 
     /** Updates the filter of the filtered task list to show all tasks */
     void updateFilteredListToShowAll();
+    
+    /** Updates the filter of the filtered task list to show all tasks */
+    void updateFilteredDeadlineListToShowAll();
+    
+    /** Updates the filter of the filtered task list to show all tasks */
+    void updateFilteredEventListToShowAll();
 
     /** Updates the filter of the filtered task list to filter by the given keywords*/
     void updateFilteredTaskList(Set<String> keywords);
+    
+    /** Updates the filter of the filtered task list to filter by the given keywords*/
+    void updateFilteredDeadlineList(Set<String> keywords);
+    
+    /** Updates the filter of the filtered task list to filter by the given keywords*/
+    void updateFilteredEventList(Set<String> keywords);
 
 }

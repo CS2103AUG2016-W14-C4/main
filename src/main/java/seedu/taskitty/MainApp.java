@@ -49,7 +49,7 @@ public class MainApp extends Application {
         super.init();
 
         config = initConfig(getApplicationParameter("config"));
-        storage = new StorageManager(config.getTaskManagerFilePath(), config.getUserPrefsFilePath());
+        storage = new StorageManager(config.getTaskManagerFilePath(), config.getDeadlineManagerFilePath(), config.getEventManagerFilePath(), config.getUserPrefsFilePath());
 
         userPrefs = initPrefs(config);
 
@@ -70,23 +70,35 @@ public class MainApp extends Application {
     }
 
     private Model initModelManager(Storage storage, UserPrefs userPrefs) {
-        Optional<ReadOnlyTaskManager> addressBookOptional;
+        Optional<ReadOnlyTaskManager> taskManagerOptional;
         ReadOnlyTaskManager initialData;
+        Optional<ReadOnlyDeadlineManager> deadlineManagerOptional;
+        ReadOnlyDeadlineManager initialDataDeadline;
+        Optional<ReadOnlyEventManager> eventManagerOptional;
+        ReadOnlyEventManager initialDataEvent;
         try {
-            addressBookOptional = storage.readTaskManager();
-            if(!addressBookOptional.isPresent()){
+            taskManagerOptional = storage.readTaskManager();
+            deadlineManagerOptional = storage.readDeadlineManager();
+            eventManagerOptional = storage.readEventManager();
+            if(!taskManagerOptional.isPresent() || !deadlineManagerOptional.isPresent() || !eventManagerOptional.isPresent()){
                 logger.info("Data file not found. Will be starting with an empty TaskManager");
             }
-            initialData = addressBookOptional.orElse(new TaskManager());
+            initialData = taskManagerOptional.orElse(new TaskManager());
+            initialDataDeadline = deadlineManagerOptional.orElse(new DeadlineManager());
+            initialDataEvent = eventManagerOptional.orElse(new EventManager());
         } catch (DataConversionException e) {
             logger.warning("Data file not in the correct format. Will be starting with an empty TaskManager");
             initialData = new TaskManager();
+            initialDataDeadline = new DeadlineManager();
+            initialDataEvent = new EventManager();
         } catch (IOException e) {
             logger.warning("Problem while reading from the file. . Will be starting with an empty TaskManager");
             initialData = new TaskManager();
+            initialDataDeadline = new DeadlineManager();
+            initialDataEvent = new EventManager();
         }
-
-        return new ModelManager(initialData, userPrefs);
+        
+        return new ModelManager(initialData, initialDataDeadline, initialDataEvent, userPrefs);
     }
 
     private void initLogging(Config config) {

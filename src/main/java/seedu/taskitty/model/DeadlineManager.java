@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * Wraps all data at the task-manager level
  * Duplicates are not allowed (by .equals comparison)
  */
-public class TaskManager implements ReadOnlyTaskManager {
+public class DeadlineManager implements ReadOnlyDeadlineManager {
 
     private final UniqueTaskList tasks;
     private final UniqueTagList tags;
@@ -25,34 +25,34 @@ public class TaskManager implements ReadOnlyTaskManager {
         tags = new UniqueTagList();
     }
 
-    public TaskManager() {}
+    public DeadlineManager() {}
 
     /**
      * Tasks and Tags are copied into this taskmanager
      */
-    public TaskManager(ReadOnlyTaskManager toBeCopied) {
+    public DeadlineManager(ReadOnlyDeadlineManager toBeCopied) {
         this(toBeCopied.getUniqueTaskList(), toBeCopied.getUniqueTagList());
     }
 
     /**
      * Tasks and Tags are copied into this taskmanager
      */
-    public TaskManager(UniqueTaskList tasks, UniqueTagList tags) {
-        resetData(tasks.getInternalList(), tags.getInternalList());
+    public DeadlineManager(UniqueTaskList tasks, UniqueTagList tags) {
+        resetData(tasks.getInternalDeadlinesList(), tags.getInternalList());
     }
 
-    public static ReadOnlyTaskManager getEmptyTaskManager() {
-        return new TaskManager();
+    public static DeadlineManager getEmptyDeadlineManager() {
+        return new DeadlineManager();
     }
 
 //// list overwrite operations
 
     public ObservableList<Task> getTasks() {
-        return tasks.getInternalList();
+        return tasks.getInternalDeadlinesList();
     }
 
     public void setTasks(List<Task> tasks) {
-        this.tasks.getInternalList().setAll(tasks);
+        this.tasks.getInternalDeadlinesList().setAll(tasks);
     }
 
     public void setTags(Collection<Tag> tags) {
@@ -64,7 +64,7 @@ public class TaskManager implements ReadOnlyTaskManager {
         setTags(newTags);
     }
 
-    public void resetData(ReadOnlyTaskManager newData) {
+    public void resetData(ReadOnlyDeadlineManager newData) {
         resetData(newData.getTaskList(), newData.getTagList());
     }
 
@@ -89,7 +89,7 @@ public class TaskManager implements ReadOnlyTaskManager {
      * @throws UniqueTaskList.DuplicateMarkAsDoneException if task has already been previously marked as done
      */
     public void doneTask(ReadOnlyTask key) throws UniqueTaskList.DuplicateMarkAsDoneException, UniqueTaskList.TaskNotFoundException {
-    	tasks.mark(key);
+        tasks.mark(key);
     }
     
     /**
@@ -145,13 +145,13 @@ public class TaskManager implements ReadOnlyTaskManager {
 
     @Override
     public String toString() {
-        return tasks.getInternalList().size() + " tasks, " + tags.getInternalList().size() +  " tags";
+        return tasks.getInternalDeadlinesList().size() + " tasks, " + tags.getInternalList().size() +  " tags";
         // TODO: refine later
     }
 
     @Override
     public List<ReadOnlyTask> getTaskList() {
-        return Collections.unmodifiableList(tasks.getInternalList());
+        return Collections.unmodifiableList(tasks.getInternalDeadlinesList());
     }
 
     @Override
@@ -173,9 +173,9 @@ public class TaskManager implements ReadOnlyTaskManager {
     @Override
     public boolean equals(Object other) {
         return other == this // short circuit if same object
-                || (other instanceof TaskManager // instanceof handles nulls
-                && this.tasks.equals(((TaskManager) other).tasks)
-                && this.tags.equals(((TaskManager) other).tags));
+                || (other instanceof DeadlineManager // instanceof handles nulls
+                && this.tasks.equals(((DeadlineManager) other).tasks)
+                && this.tags.equals(((DeadlineManager) other).tags));
     }
 
     @Override
@@ -184,3 +184,4 @@ public class TaskManager implements ReadOnlyTaskManager {
         return Objects.hash(tasks, tags);
     }
 }
+
