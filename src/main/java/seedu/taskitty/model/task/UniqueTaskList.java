@@ -111,11 +111,65 @@ public class UniqueTaskList implements Iterable<Task> {
         }
         return taskFoundAndDeleted;
     }
-
+    
+    /**
+     * Removes the equivalent task from the list, specifically for the edit command.
+     * @return the index of the removed task.
+     */
+    public int removeEdit(ReadOnlyTask toRemove) throws TaskNotFoundException {
+        assert toRemove != null;
+        int index = internalList.indexOf(toRemove);
+        final boolean taskFoundAndDeleted = internalList.remove(toRemove);
+        if (!taskFoundAndDeleted) {
+            throw new TaskNotFoundException();
+        }
+        return index;
+    }
+    
     public ObservableList<Task> getInternalList() {
   
         return internalList;
     }
+    
+    /**
+     * Returns the internal filtered list of todo tasks.
+     */
+    public ObservableList<Task> getInternalTodoList() {
+        ObservableList<Task> todoList = FXCollections.observableArrayList();
+    	for (Task t: internalList) {
+    		if (t.getTaskType().equals(TaskType.TODO)) {
+    			todoList.add(t);
+    		}
+    	}
+    	return todoList;
+    }
+    
+    /**
+     * Returns the internal filtered list of deadline tasks.
+     */
+    public ObservableList<Task> getInternalDeadlineList() {
+        ObservableList<Task> deadlineList = FXCollections.observableArrayList();
+    	for (Task t: internalList) {
+    		if (t.getTaskType().equals(TaskType.DEADLINE)) {
+    			deadlineList.add(t);
+    		}
+    	}
+    	return deadlineList;
+    }
+    
+    /**
+     * Returns the internal filtered list of event tasks.
+     */
+    public ObservableList<Task> getInternalEventList() {
+        ObservableList<Task> eventList = FXCollections.observableArrayList();
+    	for (Task t: internalList) {
+    		if (t.getTaskType().equals(TaskType.EVENT)) {
+    			eventList.add(t);
+    		}
+    	}
+    	return eventList;
+    }
+
 
     @Override
     public Iterator<Task> iterator() {
