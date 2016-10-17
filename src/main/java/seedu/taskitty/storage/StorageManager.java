@@ -4,6 +4,8 @@ import com.google.common.eventbus.Subscribe;
 
 import seedu.taskitty.commons.core.ComponentManager;
 import seedu.taskitty.commons.core.LogsCenter;
+import seedu.taskitty.commons.events.model.DeadlineManagerChangedEvent;
+import seedu.taskitty.commons.events.model.EventManagerChangedEvent;
 import seedu.taskitty.commons.events.model.TaskManagerChangedEvent;
 import seedu.taskitty.commons.events.storage.DataSavingExceptionEvent;
 import seedu.taskitty.commons.exceptions.DataConversionException;
@@ -141,10 +143,32 @@ public class StorageManager extends ComponentManager implements Storage {
 
     @Override
     @Subscribe
-    public void handleAddressBookChangedEvent(TaskManagerChangedEvent event) {
+    public void handleTaskManagerChangedEvent(TaskManagerChangedEvent event) {
         logger.info(LogsCenter.getEventHandlingLogMessage(event, "Local data changed, saving to file"));
         try {
             saveTaskManager(event.data);
+        } catch (IOException e) {
+            raise(new DataSavingExceptionEvent(e));
+        }
+    }
+    
+    @Override
+    @Subscribe
+    public void handleDeadlineManagerChangedEvent(DeadlineManagerChangedEvent event) {
+        logger.info(LogsCenter.getEventHandlingLogMessage(event, "Local data changed, saving to file"));
+        try {
+            saveDeadlineManager(event.data);
+        } catch (IOException e) {
+            raise(new DataSavingExceptionEvent(e));
+        }
+    }
+    
+    @Override
+    @Subscribe
+    public void handleEventManagerChangedEvent(EventManagerChangedEvent event) {
+        logger.info(LogsCenter.getEventHandlingLogMessage(event, "Local data changed, saving to file"));
+        try {
+            saveEventManager(event.data);
         } catch (IOException e) {
             raise(new DataSavingExceptionEvent(e));
         }

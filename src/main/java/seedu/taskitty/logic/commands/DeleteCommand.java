@@ -43,13 +43,23 @@ public class DeleteCommand extends Command {
     @Override
     public CommandResult execute() {
         assert categoryIndex >= 0 && categoryIndex < 3;
-        UnmodifiableObservableList<ReadOnlyTask> lastShownList = model.getFilteredTaskList();
+        UnmodifiableObservableList<ReadOnlyTask> lastShownList = null;
+        if (categoryIndex == 0) {
+            lastShownList = model.getFilteredTaskList();
+            System.out.println(lastShownList.size());
+        }
+        else if (categoryIndex == 1) {
+            lastShownList = model.getFilteredDeadlineList();
+        }
+        else if (categoryIndex == 2) {
+            lastShownList = model.getFilteredEventList();
+        }
         if (lastShownList.size() < targetIndex) {
             indicateAttemptToExecuteIncorrectCommand();
             model.removeUnchangedState();
             return new CommandResult(Messages.MESSAGE_INVALID_TASK_DISPLAYED_INDEX);
         }
-
+        
         ReadOnlyTask taskToDelete = lastShownList.get(targetIndex - 1);
 
         try {

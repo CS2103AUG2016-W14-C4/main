@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  */
 public class XmlDeadlineManagerStorage implements DeadlineManagerStorage {
 
-    private static final Logger logger = LogsCenter.getLogger(XmlTaskManagerStorage.class);
+    private static final Logger logger = LogsCenter.getLogger(XmlDeadlineManagerStorage.class);
 
     private String filePath;
 

@@ -1,5 +1,7 @@
 package seedu.taskitty.storage;
 
+import seedu.taskitty.commons.events.model.DeadlineManagerChangedEvent;
+import seedu.taskitty.commons.events.model.EventManagerChangedEvent;
 import seedu.taskitty.commons.events.model.TaskManagerChangedEvent;
 import seedu.taskitty.commons.events.storage.DataSavingExceptionEvent;
 import seedu.taskitty.commons.exceptions.DataConversionException;
@@ -55,5 +57,9 @@ public interface Storage extends TaskManagerStorage, DeadlineManagerStorage, Eve
      *   Creates the data file if it is missing.
      * Raises {@link DataSavingExceptionEvent} if there was an error during saving.
      */
-    void handleAddressBookChangedEvent(TaskManagerChangedEvent abce);
+    void handleTaskManagerChangedEvent(TaskManagerChangedEvent abce);
+    
+    void handleDeadlineManagerChangedEvent(DeadlineManagerChangedEvent abce);
+    
+    void handleEventManagerChangedEvent(EventManagerChangedEvent abce);
 }

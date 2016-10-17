@@ -4,6 +4,8 @@ import javafx.collections.transformation.FilteredList;
 import seedu.taskitty.commons.core.ComponentManager;
 import seedu.taskitty.commons.core.LogsCenter;
 import seedu.taskitty.commons.core.UnmodifiableObservableList;
+import seedu.taskitty.commons.events.model.DeadlineManagerChangedEvent;
+import seedu.taskitty.commons.events.model.EventManagerChangedEvent;
 import seedu.taskitty.commons.events.model.TaskManagerChangedEvent;
 import seedu.taskitty.commons.util.StringUtil;
 import seedu.taskitty.model.task.ReadOnlyTask;
@@ -84,13 +86,13 @@ public class ModelManager extends ComponentManager implements Model {
     @Override
     public void resetData(ReadOnlyDeadlineManager newData) {
         deadlineManager.resetData(newData);
-        indicateTaskManagerChanged();
+        indicateDeadlineManagerChanged();
     }
     
     @Override
     public void resetData(ReadOnlyEventManager newData) {
         eventManager.resetData(newData);
-        indicateTaskManagerChanged();
+        indicateEventManagerChanged();
     }
 
     @Override
@@ -112,21 +114,33 @@ public class ModelManager extends ComponentManager implements Model {
     private void indicateTaskManagerChanged() {
         raise(new TaskManagerChangedEvent(taskManager));
     }
+    
+    /** Raises an event to indicate the model has changed */
+    private void indicateDeadlineManagerChanged() {
+        raise(new DeadlineManagerChangedEvent(deadlineManager));
+    }
+    
+    /** Raises an event to indicate the model has changed */
+    private void indicateEventManagerChanged() {
+        raise(new EventManagerChangedEvent(eventManager));
+    }
 
     @Override
     public synchronized void deleteTask(ReadOnlyTask target) throws TaskNotFoundException {
         switch (target.getNumArgs()) {
             case 1:
                 taskManager.removeTask(target);
-            
+                indicateTaskManagerChanged();
+                
             case 3:
                 deadlineManager.removeTask(target);
-              
+                indicateDeadlineManagerChanged();
+                
             case 5:
                 eventManager.removeTask(target);
+                indicateEventManagerChanged();
         }
         
-        indicateTaskManagerChanged();
     }
 
     @Override
@@ -135,16 +149,18 @@ public class ModelManager extends ComponentManager implements Model {
         case 1:
             taskManager.addTask(task);
             updateFilteredListToShowAll();
+            indicateTaskManagerChanged();
         
         case 3:
             deadlineManager.addTask(task);
             updateFilteredDeadlineListToShowAll();
+            indicateDeadlineManagerChanged();
           
         case 5:
             eventManager.addTask(task);
             updateFilteredEventListToShowAll();
+            indicateEventManagerChanged();
         }
-        indicateTaskManagerChanged();
     }
     
     public synchronized void undo() {
@@ -180,16 +196,18 @@ public class ModelManager extends ComponentManager implements Model {
         case 1:
             taskManager.doneTask(target);
             updateFilteredListToShowAll();
+            indicateTaskManagerChanged();
         
         case 3:
             deadlineManager.doneTask(target);
             updateFilteredDeadlineListToShowAll();
+            indicateDeadlineManagerChanged();
           
         case 5:
             eventManager.doneTask(target);
             updateFilteredEventListToShowAll();
+            indicateEventManagerChanged();
         }
-    	indicateTaskManagerChanged();
     }
    	@Override
     public synchronized void editTask(ReadOnlyTask target, Task task, int index) throws UniqueTaskList.TaskNotFoundException, UniqueTaskList.DuplicateTaskException {
@@ -199,20 +217,22 @@ public class ModelManager extends ComponentManager implements Model {
             indicateTaskManagerChanged();
             taskManager.addTask(task, index);
             updateFilteredListToShowAll();
+            indicateTaskManagerChanged();
         
         case 3:
             deadlineManager.removeTask(target);
-            indicateTaskManagerChanged();
+            indicateDeadlineManagerChanged();
             deadlineManager.addTask(task, index);
             updateFilteredDeadlineListToShowAll();
+            indicateDeadlineManagerChanged();
           
         case 5:
             eventManager.removeTask(target);
-            indicateTaskManagerChanged();
+            indicateEventManagerChanged();
             eventManager.addTask(task, index);
             updateFilteredEventListToShowAll();
+            indicateEventManagerChanged();
         }
-        indicateTaskManagerChanged();
     }
 
     //=========== Filtered Task List Accessors ===============================================================
