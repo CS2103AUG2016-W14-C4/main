@@ -46,11 +46,11 @@ public class TaskManager implements ReadOnlyTaskManager {
     }
 
 //// list overwrite operations
-
+    
     public ObservableList<Task> getTasks() {
         return tasks.getInternalList();
     }
-
+   
     public void setTasks(List<Task> tasks) {
         this.tasks.getInternalList().setAll(tasks);
     }
@@ -134,6 +134,12 @@ public class TaskManager implements ReadOnlyTaskManager {
             throw new UniqueTaskList.TaskNotFoundException();
         }
     }
+    
+    public int removeTaskForEdit(ReadOnlyTask key) throws UniqueTaskList.TaskNotFoundException {
+
+    		int index = tasks.removeEdit(key);
+    		return index;
+    }
 
 //// tag-level operations
 
@@ -148,11 +154,11 @@ public class TaskManager implements ReadOnlyTaskManager {
         return tasks.getInternalList().size() + " tasks, " + tags.getInternalList().size() +  " tags";
         // TODO: refine later
     }
-
     @Override
-    public List<ReadOnlyTask> getTaskList() {
-        return Collections.unmodifiableList(tasks.getInternalList());
-    }
+	public List<ReadOnlyTask> getTaskList() {
+		return Collections.unmodifiableList(tasks.getInternalList());
+	}
+   
 
     @Override
     public List<Tag> getTagList() {
@@ -183,4 +189,6 @@ public class TaskManager implements ReadOnlyTaskManager {
         // use this method for custom fields hashing instead of implementing your own
         return Objects.hash(tasks, tags);
     }
+
+	
 }
