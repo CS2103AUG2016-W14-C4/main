@@ -38,11 +38,7 @@ public class CommandParser {
 
     private static final Pattern TASK_DATA_ARGS_FORMAT = //Tags must be at the end
             Pattern.compile("(?<arguments>[\\p{Graph} ]+)"); // \p{Graph} is \p{Alnum} or \p{Punct}
-    
-    private static final Pattern EDIT_TASK_DATA_ARGS_FORMAT = // '/' forward slashes are reserved for delimiter prefixes
-            Pattern.compile("(?<targetIndex>.)"
-                    + "(?<name>[^/]+)"
-                    + "(?<tagArguments>(?: t/[^/]+)*)"); // variable number of tags
+
 
     public CommandParser() {}
 
@@ -243,6 +239,8 @@ public class CommandParser {
             return new IncorrectCommand(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
         }
+        
+        
         //takes the last argument given for parsing index
         Optional<Integer> index = parseIndex(splitArgs[splitArgs.length - 1]);
         
@@ -258,6 +256,42 @@ public class CommandParser {
     }
     
     /**
+     * Parses arguments in the context of the edit task command.
+     *
+     * @param args full command args string
+     * @return the prepared command
+     */
+    private Command prepareEdit(String args) {
+    	String[] splitArgs = args.trim().split(" ");
+        if (splitArgs.length <= 1 || splitArgs.length > 3) {
+            return new IncorrectCommand(
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE));
+        }
+       
+      //takes the second last argument given for parsing index
+        Optional<Integer> index = parseIndex(splitArgs[splitArgs.length - 2]);
+        
+        if(!index.isPresent()){
+            return new IncorrectCommand(
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE));
+        }
+       
+        
+        // takes the last argument given for new name
+        String name = splitArgs[splitArgs.length - 1];
+        
+        try {
+        	 if (splitArgs.length == 2) {
+                 return new EditCommand(name, index.get());
+             } else {
+                 return new EditCommand(name, index.get(), StringUtil.getCategoryIndex(splitArgs[0]));
+             }
+        } catch (IllegalValueException ive) {
+            return new IncorrectCommand(ive.getMessage());
+        }
+    }
+    
+    /**
      * Parses arguments in the context of the mark as done command.
      * 
      * @param args full command args string
@@ -265,46 +299,26 @@ public class CommandParser {
      */
     private Command prepareDone(String args) {
     	
-    	Optional<Integer> index = parseIndex(args);
-    	if (!index.isPresent()){
-    		return new IncorrectCommand(
-    				String.format(MESSAGE_INVALID_COMMAND_FORMAT, DoneCommand.MESSAGE_USAGE));
-    	}
-    	
-    	return new DoneCommand(index.get());
-    }
-    
-    /**
-     * Parses arguments in the context of the edit task command.
-     *
-     * @param args full command args string
-     * @return the prepared command
-     */
-    private Command prepareEdit(String args) {
-        final Matcher matcher = EDIT_TASK_DATA_ARGS_FORMAT.matcher(args.trim());
-        // Validate arg string format
-        if (!matcher.matches()) {
-            return new IncorrectCommand(String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE));
-        } 
-        
-        String index = matcher.group("targetIndex");
-        Optional<Integer> index1 = parseIndex(index);
-        
-        if(!index1.isPresent()){
+    	String[] splitArgs = args.trim().split(" ");
+        if (splitArgs.length == 0 || splitArgs.length > 2) {
             return new IncorrectCommand(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, DoneCommand.MESSAGE_USAGE));
         }
         
-        try {
-            return new EditCommand(
-                    matcher.group("name"),
-                    getTagsFromArgs(matcher.group("tagArguments")),
-                    index1.get()
-            );
-        } catch (IllegalValueException ive) {
-            return new IncorrectCommand(ive.getMessage());
+        //takes the last argument given for parsing index
+        Optional<Integer> index = parseIndex(splitArgs[splitArgs.length - 1]);
+        
+        if(!index.isPresent()){
+            return new IncorrectCommand(
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, DoneCommand.MESSAGE_USAGE));
+        }
+        if (splitArgs.length == 1) {
+            return new DoneCommand(index.get());
+        } else {
+            return new DoneCommand(index.get(), StringUtil.getCategoryIndex(splitArgs[0]));
         }
     }
+
 
     /**
      * Parses arguments in the context of the select person command.
