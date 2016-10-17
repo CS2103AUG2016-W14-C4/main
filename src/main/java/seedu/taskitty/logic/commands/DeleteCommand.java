@@ -2,6 +2,7 @@ package seedu.taskitty.logic.commands;
 
 import seedu.taskitty.commons.core.Messages;
 import seedu.taskitty.commons.core.UnmodifiableObservableList;
+import seedu.taskitty.commons.util.AppUtil;
 import seedu.taskitty.model.task.ReadOnlyTask;
 import seedu.taskitty.model.task.UniqueTaskList.TaskNotFoundException;
 
@@ -43,17 +44,7 @@ public class DeleteCommand extends Command {
     @Override
     public CommandResult execute() {
         assert categoryIndex >= 0 && categoryIndex < 3;
-        UnmodifiableObservableList<ReadOnlyTask> lastShownList = null;
-        if (categoryIndex == 0) {
-            lastShownList = model.getFilteredTaskList();
-            System.out.println(lastShownList.size());
-        }
-        else if (categoryIndex == 1) {
-            lastShownList = model.getFilteredDeadlineList();
-        }
-        else if (categoryIndex == 2) {
-            lastShownList = model.getFilteredEventList();
-        }
+        UnmodifiableObservableList<ReadOnlyTask> lastShownList = AppUtil.getCorrectList(model,categoryIndex);
         if (lastShownList.size() < targetIndex) {
             indicateAttemptToExecuteIncorrectCommand();
             model.removeUnchangedState();

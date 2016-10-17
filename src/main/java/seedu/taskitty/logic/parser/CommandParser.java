@@ -264,14 +264,24 @@ public class CommandParser {
      * @return the prepared command
      */
     private Command prepareDone(String args) {
-    	
-    	Optional<Integer> index = parseIndex(args);
+        String[] splitArgs = args.trim().split(" ");
+        if (splitArgs.length == 0 || splitArgs.length > 2) {
+            return new IncorrectCommand(
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, DoneCommand.MESSAGE_USAGE));
+        }
+        //takes the last argument given for parsing index
+        Optional<Integer> index = parseIndex(splitArgs[splitArgs.length - 1]);
+        
     	if (!index.isPresent()){
     		return new IncorrectCommand(
     				String.format(MESSAGE_INVALID_COMMAND_FORMAT, DoneCommand.MESSAGE_USAGE));
     	}
     	
-    	return new DoneCommand(index.get());
+    	if (splitArgs.length == 1) {
+            return new DoneCommand(index.get());
+        } else {
+            return new DoneCommand(index.get(), StringUtil.getCategoryIndex(splitArgs[0]));
+        }
     }
     
     /**
