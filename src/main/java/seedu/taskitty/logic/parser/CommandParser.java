@@ -347,15 +347,42 @@ public class CommandParser {
      * @return the prepared command
      */
     private Command prepareFind(String args) {
+        extractKeywords(args);
         final Matcher matcher = KEYWORDS_ARGS_FORMAT.matcher(args.trim());
         if (!matcher.matches()) {
             return new IncorrectCommand(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
                     FindCommand.MESSAGE_USAGE));
         }
 
-        // keywords delimited by whitespace
-        final String[] keywords = matcher.group("keywords").split("\\s+");
+        // keywords delimited by whitespace and dates and times converted to TaskDate and TaskTime format
+        final String[] keywords = extractKeywords(matcher.group("keywords"));
         final Set<String> keywordSet = new HashSet<>(Arrays.asList(keywords));
         return new FindCommand(keywordSet);
+    }
+    
+    /**
+     * Helper method in extracting each keyword from the args and converting
+     * the dates and times using natty to the format used by TaskTime and TaskDate
+     * @param args the full command arg string
+     * @return string array where all the keywords have been separated and converted
+     */
+    private String[] extractKeywords(String args) {
+        Parser dateTimeParser = new Parser();
+        List<DateGroup> dateGroups = dateTimeParser.parse(args);
+        StringBuilder builder = new StringBuilder(args);
+        for (DateGroup group : dateGroups) {
+            List<Date> dates = group.getDates();
+            for (Date date : dates) {
+                String convertedDateTime = extractLocalDate(date);
+                if (extractLocalTime(date) != null) {
+                    convertedDateTime += " " + extractLocalTime(date);
+                }
+                int index = args.indexOf(group.getText());
+                builder.replace(index, index + group.getText().length(), convertedDateTime);
+            }
+        }        
+        String[] splitKeyWords = builder.toString().split("\\s");
+        return splitKeyWords;
+        
     }
 }
