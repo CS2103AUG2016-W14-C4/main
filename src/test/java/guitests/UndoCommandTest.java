@@ -74,8 +74,8 @@ public class UndoCommandTest extends TaskManagerGuiTest {
     @Test
     public void find() {
         commandBox.runCommand("find task");
-        commandBox.runCommand("find xmas");
-        commandBox.runCommand("find xmas");
+        commandBox.runCommand("find xmass");
+        commandBox.runCommand("find xmass");
         assertUndoSuccess(td.shop, td.dinner);
         assertUndoSuccess();
         assertUndoSuccess(td.getTypicalTasks());
@@ -91,7 +91,7 @@ public class UndoCommandTest extends TaskManagerGuiTest {
         taskToAdd = td.deadline;
         testTaskList.push(addTask(taskToAdd, testTaskList.peek()));
         testTaskList.push(deleteTask(testTaskList.get(1).length / 2, testTaskList.peek()));
-        commandBox.runCommand("find xmas");
+        commandBox.runCommand("find xmass");
         testTaskList.push(new TestTask[]{td.shop, td.dinner});
         commandBox.runCommand("clear");
         assertUndoSuccess(testTaskList.pop());
@@ -117,7 +117,7 @@ public class UndoCommandTest extends TaskManagerGuiTest {
         assertUndoSuccess(testTaskList.pop());
         assertUndoSuccess(testTaskList.pop());
         testTaskList.push(addTask(taskToAdd, testTaskList.peek()));
-        commandBox.runCommand("find xmas");
+        commandBox.runCommand("find xmass");
         testTaskList.push(new TestTask[]{td.shop, td.dinner});
         commandBox.runCommand("clear");
         testTaskList.push(new TestTask[]{});

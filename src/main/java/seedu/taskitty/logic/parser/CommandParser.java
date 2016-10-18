@@ -347,7 +347,6 @@ public class CommandParser {
      * @return the prepared command
      */
     private Command prepareFind(String args) {
-        extractKeywords(args);
         final Matcher matcher = KEYWORDS_ARGS_FORMAT.matcher(args.trim());
         if (!matcher.matches()) {
             return new IncorrectCommand(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
@@ -374,15 +373,19 @@ public class CommandParser {
             List<Date> dates = group.getDates();
             for (Date date : dates) {
                 String convertedDateTime = extractLocalDate(date);
+                String givenDateTimeString = group.getText();
                 if (extractLocalTime(date) != null) {
                     convertedDateTime += " " + extractLocalTime(date);
                 }
-                int index = args.indexOf(group.getText());
-                builder.replace(index, index + group.getText().length(), convertedDateTime);
+                int index = args.indexOf(givenDateTimeString);                
+                if (builder.indexOf(givenDateTimeString) != -1) {
+                    builder.replace(index, index + givenDateTimeString.length(), convertedDateTime);
+                } else {
+                    builder.append(" " + convertedDateTime);
+                }
             }
-        }        
+        }
         String[] splitKeyWords = builder.toString().split("\\s");
-        return splitKeyWords;
-        
+        return splitKeyWords;       
     }
 }
