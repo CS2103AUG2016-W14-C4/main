@@ -215,20 +215,29 @@ public class ModelManager extends ComponentManager implements Model {
         case 1:
             taskManager.removeTask(target);
             indicateTaskManagerChanged();
+     
+        case 3:
+            deadlineManager.removeTask(target);
+            indicateDeadlineManagerChanged();
+            
+          
+        case 5:
+            eventManager.removeTask(target);
+            indicateEventManagerChanged();
+        }
+        
+        switch (task.getNumArgs()) {
+        case 1:
             taskManager.addTask(task, index);
             updateFilteredListToShowAll();
             indicateTaskManagerChanged();
         
         case 3:
-            deadlineManager.removeTask(target);
-            indicateDeadlineManagerChanged();
             deadlineManager.addTask(task, index);
             updateFilteredDeadlineListToShowAll();
             indicateDeadlineManagerChanged();
-          
+        
         case 5:
-            eventManager.removeTask(target);
-            indicateEventManagerChanged();
             eventManager.addTask(task, index);
             updateFilteredEventListToShowAll();
             indicateEventManagerChanged();

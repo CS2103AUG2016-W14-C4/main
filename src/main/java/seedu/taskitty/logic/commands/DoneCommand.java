@@ -23,7 +23,7 @@ public class DoneCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Marks the task identified by the index number used in the last task listing as done.\n"
             + "Parameters: INDEX (must be a positive integer)\n"
-            + "Example: " + COMMAND_WORD + " 1";
+            + "Example: " + COMMAND_WORD + " " + CATEGORY_CHARS + " 1";
 
     public static final String MESSAGE_MARK_TASK_AS_DONE_SUCCESS = "Task done: %1$s";
     public static final String MESSAGE_DUPLICATE_MARK_AS_DONE_ERROR = "The task \"%1$s\" has already been marked as done.";
@@ -65,7 +65,7 @@ public class DoneCommand extends Command {
             assert false : "The target task cannot be missing";
         }
 
-        return new CommandResult(String.format(MESSAGE_MARK_TASK_AS_DONE_SUCCESS, taskToBeMarkedDone));
+        return new CommandResult(String.format(MESSAGE_MARK_TASK_AS_DONE_SUCCESS, CATEGORIES[categoryIndex], taskToBeMarkedDone));
     }
 
 
