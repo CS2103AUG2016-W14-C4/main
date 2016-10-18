@@ -35,12 +35,46 @@ public interface ReadOnlyTask {
      */
     default String getAsText() {
         final StringBuilder builder = new StringBuilder();
-        builder.append(getName())
-                .append(" Tags: ");
+        builder.append(getName());
+        if (getStartDate() != null) {
+            builder.append("From: " + getStartDate().toString());
+        }
+        if (getStartTime() != null) {
+            builder.append(" " + getStartTime().toString());
+        }
+        if (getEndDate() != null) {
+            builder.append("Till: " + getEndDate().toString());
+        }
+        if (getEndTime() != null) {
+            builder.append(" " + getEndTime().toString());
+        }
+        builder.append(" Tags: ");
         getTags().forEach(builder::append);
         return builder.toString();
     }
-
+    
+    /**
+     * Formats the task as a String representing all arguments it has.
+     */
+    default String getAllKeyArguments() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append(getName());
+        if (getStartDate() != null) {
+            builder.append(" " + getStartDate().toString());
+        }
+        if (getStartTime() != null) {
+            builder.append(" " + getStartTime().toString());
+        }
+        if (getEndDate() != null) {
+            builder.append(" " + getEndDate().toString());
+        }
+        if (getEndTime() != null) {
+            builder.append(" " + getEndTime().toString());
+        }
+        getTags().forEach(builder::append);
+        return builder.toString();
+    }
+    
     /**
      * Returns a string representation of this Task's tags
      */
