@@ -28,9 +28,9 @@ public class TaskDate {
     public final LocalDate date;
 
     /**
-     * Validates given name.
+     * Validates task date.
      *
-     * @throws IllegalValueException if given name string is invalid.
+     * @throws IllegalValueException if given date string is invalid.
      */
     public TaskDate(String date) throws IllegalValueException {
         if (date == null) {
@@ -46,7 +46,7 @@ public class TaskDate {
     }
 
     /**
-     * Returns true if a given string is a valid person name.
+     * Returns true if a given string is a valid task date.
      */
     public static boolean isValidDate(String test) {
         return test.matches(DATE_VALIDATION_REGEX);
