@@ -371,27 +371,40 @@ public class CommandParser {
         StringBuilder builder = new StringBuilder(args);
         for (DateGroup group : dateGroups) {
             List<Date> dates = group.getDates();
+            String givenDateTimeString = group.getText();
             for (Date date : dates) {
-                String convertedDateTime = extractLocalDate(date);
-                String givenDateTimeString = group.getText();
-                String currentDate = new SimpleDateFormat(TaskDate.DATE_FORMAT_STRING).format(new Date());
-                if (extractLocalTime(date) != null) {
-                    // if there is a time keyword inside ignore date if its equal to current date
-                    if (convertedDateTime.equals(currentDate)) {
-                        convertedDateTime = extractLocalTime(date);
-                    } else {
-                        convertedDateTime += " " + extractLocalTime(date); 
-                    }                   
-                }
-                int index = args.indexOf(givenDateTimeString);                
-                if (builder.indexOf(givenDateTimeString) != -1) {
-                    builder.replace(index, index + givenDateTimeString.length(), convertedDateTime);
-                } else {
-                    builder.append(" " + convertedDateTime);
-                }
+                convertDatesAndTime(args, givenDateTimeString, builder, date);
             }
         }
         String[] splitKeyWords = builder.toString().split("\\s");
         return splitKeyWords;       
+    }
+    
+    /**
+     * Helper method to convert the dates and time in the args to TaskDate and TaskTime format
+     * @param args the full command arg string
+     * @param builder StringBuilder used for replacing the old format to converted ones
+     * @param givenDateTimeString the string parsed to obtain the date and time  
+     * @param date the date and time info obtained after parsing
+     */
+    private void convertDatesAndTime(String args, String givenDateTimeString, StringBuilder builder, Date date) {
+        String convertedDateTime = extractLocalDate(date);
+        String currentDate = new SimpleDateFormat(TaskDate.DATE_FORMAT_STRING).format(new Date());
+        if (extractLocalTime(date) != null) {
+            // if there is a time keyword inside ignore date if its equal to current date
+            if (convertedDateTime.equals(currentDate)) {
+                convertedDateTime = extractLocalTime(date);
+            } else {
+                convertedDateTime += " " + extractLocalTime(date); 
+            }                   
+        }
+        int index = args.indexOf(givenDateTimeString);                
+        if (builder.indexOf(givenDateTimeString) != -1) {
+            builder.replace(index, index + givenDateTimeString.length(), convertedDateTime);
+            // if have already replaced once, no need to replace again, 
+            //just append the converted date time in
+        } else {
+            builder.append(" " + convertedDateTime);
+        }
     }
 }
