@@ -374,8 +374,14 @@ public class CommandParser {
             for (Date date : dates) {
                 String convertedDateTime = extractLocalDate(date);
                 String givenDateTimeString = group.getText();
+                String currentDate = new SimpleDateFormat(TaskDate.DATE_FORMAT_STRING).format(new Date());
                 if (extractLocalTime(date) != null) {
-                    convertedDateTime += " " + extractLocalTime(date);
+                    // if there is a time keyword inside ignore date if its equal to current date
+                    if (convertedDateTime.equals(currentDate)) {
+                        convertedDateTime = extractLocalTime(date);
+                    } else {
+                        convertedDateTime += " " + extractLocalTime(date); 
+                    }                   
                 }
                 int index = args.indexOf(givenDateTimeString);                
                 if (builder.indexOf(givenDateTimeString) != -1) {
