@@ -9,6 +9,7 @@ import seedu.taskitty.model.tag.UniqueTagList;
 public interface ReadOnlyTask {
 
     Name getName();
+    int getNumArgs();
     boolean getIsDone();
     TaskDate getStartDate();
     TaskDate getEndDate();

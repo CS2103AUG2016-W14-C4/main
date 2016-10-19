@@ -39,6 +39,8 @@ public class UniqueTaskList implements Iterable<Task> {
     public static class DuplicateMarkAsDoneException extends Exception {}
 
     private final ObservableList<Task> internalList = FXCollections.observableArrayList();
+    private final ObservableList<Task> internalDeadlineList = FXCollections.observableArrayList();
+    private final ObservableList<Task> internalEventList = FXCollections.observableArrayList();
 
     /**
      * Constructs empty TaskList.
@@ -50,7 +52,8 @@ public class UniqueTaskList implements Iterable<Task> {
      */
     public boolean contains(ReadOnlyTask toCheck) {
         assert toCheck != null;
-        return internalList.contains(toCheck);
+        ObservableList<Task> list = getListType(toCheck);
+        return list.contains(toCheck);
     }
 
     /**
@@ -63,9 +66,33 @@ public class UniqueTaskList implements Iterable<Task> {
         if (contains(toAdd)) {
             throw new DuplicateTaskException();
         }
-        internalList.add(toAdd);
+        ObservableList<Task> list = getListType(toAdd);
+        list.add(toAdd);
     }
     
+    /**
+     * Gets the appropriate type of list based on the type of task
+     * @param toCheck
+     * @return
+     */
+    private ObservableList<Task> getListType(ReadOnlyTask toCheck) {
+        assert toCheck.getNumArgs() == 1 || toCheck.getNumArgs() == 3 || toCheck.getNumArgs() == 5 ;
+        switch (toCheck.getNumArgs()) {
+        
+        case 1:
+            return internalList;
+            
+        case 3:
+            return internalDeadlineList;
+        
+        case 5:
+            return internalEventList;
+            
+        default:
+            return internalList;
+        }
+    }
+
     /** Marks the given task as done from the list.
      * 
      * @throws TaskNotFoundException if no such task could be found in the list.
@@ -76,10 +103,12 @@ public class UniqueTaskList implements Iterable<Task> {
     	if (toMark.getIsDone()) {
     		throw new DuplicateMarkAsDoneException();
     	}
-    	final boolean taskFoundAndMarkedAsDone = internalList.remove(toMark);
+    	
+    	ObservableList<Task> list = getListType(toMark);
+    	final boolean taskFoundAndMarkedAsDone = list.remove(toMark);
     	Task editableToMark = (Task) toMark;
     	editableToMark.markAsDone();
-    	internalList.add(editableToMark);
+    	list.add(editableToMark);
     	if (!taskFoundAndMarkedAsDone) {
     		throw new TaskNotFoundException();
     	}
@@ -95,7 +124,8 @@ public class UniqueTaskList implements Iterable<Task> {
         if (contains(toAdd)) {
             throw new DuplicateTaskException();
         }
-        internalList.add(index, toAdd);
+        ObservableList<Task> list = getListType(toAdd);
+        list.add(index, toAdd);
     }
 
     /**
@@ -105,7 +135,8 @@ public class UniqueTaskList implements Iterable<Task> {
      */
     public boolean remove(ReadOnlyTask toRemove) throws TaskNotFoundException {
         assert toRemove != null;
-        final boolean taskFoundAndDeleted = internalList.remove(toRemove);
+        ObservableList<Task> list = getListType(toRemove);
+        final boolean taskFoundAndDeleted = list.remove(toRemove);
         if (!taskFoundAndDeleted) {
             throw new TaskNotFoundException();
         }
@@ -115,6 +146,16 @@ public class UniqueTaskList implements Iterable<Task> {
     public ObservableList<Task> getInternalList() {
   
         return internalList;
+    }
+    
+    public ObservableList<Task> getInternalDeadlinesList() {
+        
+        return internalDeadlineList;
+    }
+    
+    public ObservableList<Task> getInternalEventsList() {
+        
+        return internalEventList;
     }
 
     @Override

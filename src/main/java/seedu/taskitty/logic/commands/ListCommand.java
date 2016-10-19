@@ -15,6 +15,8 @@ public class ListCommand extends Command {
     @Override
     public CommandResult execute() {
         model.updateFilteredListToShowAll();
+        model.updateFilteredDeadlineListToShowAll();
+        model.updateFilteredEventListToShowAll();
         return new CommandResult(MESSAGE_SUCCESS);
     }
 

@@ -80,6 +80,8 @@ public class ConfigUtilTest {
         config.setLogLevel(Level.INFO);
         config.setUserPrefsFilePath("C:\\preferences.json");
         config.setTaskManagerFilePath("data/taskmanager.xml");
+//        config.setDeadlineManagerFilePath("data/deadlinemanager.xml");
+//        config.setEventManagerFilePath("data/eventmanager.xml");
         config.setTaskManagerName("MyTasks");
         return config;
     }

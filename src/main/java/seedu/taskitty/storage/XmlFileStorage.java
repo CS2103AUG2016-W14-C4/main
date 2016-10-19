@@ -22,6 +22,24 @@ public class XmlFileStorage {
             assert false : "Unexpected exception " + e.getMessage();
         }
     }
+    
+    public static void saveDataToFile(File file, XmlSerializableDeadlineManager addressBook)
+            throws FileNotFoundException {
+        try {
+            XmlUtil.saveDataToFile(file, addressBook);
+        } catch (JAXBException e) {
+            assert false : "Unexpected exception " + e.getMessage();
+        }
+    }
+    
+    public static void saveDataToFile(File file, XmlSerializableEventManager addressBook)
+            throws FileNotFoundException {
+        try {
+            XmlUtil.saveDataToFile(file, addressBook);
+        } catch (JAXBException e) {
+            assert false : "Unexpected exception " + e.getMessage();
+        }
+    }
 
     /**
      * Returns address book in the file or an empty address book
@@ -34,5 +52,22 @@ public class XmlFileStorage {
             throw new DataConversionException(e);
         }
     }
-
+    
+    public static XmlSerializableDeadlineManager loadDeadlineDataFromSaveFile(File file) throws DataConversionException,
+                                                                            FileNotFoundException {
+        try {
+            return XmlUtil.getDataFromFile(file, XmlSerializableDeadlineManager.class);
+        } catch (JAXBException e) {
+            throw new DataConversionException(e);
+        }
+    }
+    
+    public static XmlSerializableEventManager loadEventDataFromSaveFile(File file) throws DataConversionException,
+                                                                            FileNotFoundException {
+        try {
+            return XmlUtil.getDataFromFile(file, XmlSerializableEventManager.class);
+        } catch (JAXBException e) {
+            throw new DataConversionException(e);
+        }
+    }
 }

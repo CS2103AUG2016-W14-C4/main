@@ -15,6 +15,7 @@ public class TestTask implements ReadOnlyTask {
     private TaskTime endTime;
     private boolean isDone;
     private UniqueTagList tags;
+    private int numArgs;
 
     public TestTask() {
         tags = new UniqueTagList();
@@ -68,6 +69,11 @@ public class TestTask implements ReadOnlyTask {
     @Override
     public UniqueTagList getTags() {
         return tags;
+    }
+    
+    @Override
+    public int getNumArgs() {
+        return numArgs;
     }
 
     @Override
