@@ -8,7 +8,7 @@ import seedu.taskitty.commons.exceptions.IllegalValueException;
 import seedu.taskitty.commons.util.TimeUtil;
 
 /**
- * Represents a Task's name in the task manager.
+ * Represents a Task's time in the task manager.
  * Guarantees: immutable; is valid as declared in {@link #isValidName(String)}
  */
 public class TaskTime {
@@ -29,9 +29,9 @@ public class TaskTime {
     public final LocalTime time;
 
     /**
-     * Validates given name.
+     * Validates task time.
      *
-     * @throws IllegalValueException if given name string is invalid.
+     * @throws IllegalValueException if given time is invalid.
      */
     public TaskTime(String time) throws IllegalValueException {
         if (time == null) {
@@ -47,7 +47,7 @@ public class TaskTime {
     }
 
     /**
-     * Returns true if a given string is a valid person name.
+     * Returns true if a given string is a valid task time.
      */
     public static boolean isValidName(String test) {
         return test.matches(TIME_VALIDATION_FORMAT);

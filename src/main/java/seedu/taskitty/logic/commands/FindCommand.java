@@ -3,8 +3,8 @@ package seedu.taskitty.logic.commands;
 import java.util.Set;
 
 /**
- * Finds and lists all tasks in task manager whose name contains any of the argument keywords.
- * Keyword matching is case sensitive.
+ * Finds and lists all tasks in task manager whose arguments contains any of the argument keywords.
+ * Keyword matching is case insensitive.
  */
 public class FindCommand extends Command {
 

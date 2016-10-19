@@ -353,9 +353,58 @@ public class CommandParser {
                     FindCommand.MESSAGE_USAGE));
         }
 
-        // keywords delimited by whitespace
-        final String[] keywords = matcher.group("keywords").split("\\s+");
+        // keywords delimited by whitespace and dates and times converted to TaskDate and TaskTime format
+        final String[] keywords = extractKeywords(matcher.group("keywords"));
         final Set<String> keywordSet = new HashSet<>(Arrays.asList(keywords));
         return new FindCommand(keywordSet);
+    }
+    
+    /**
+     * Helper method in extracting each keyword from the args and converting
+     * the dates and times using natty to the format used by TaskTime and TaskDate
+     * @param args the full command arg string
+     * @return string array where all the keywords have been separated and converted
+     */
+    private String[] extractKeywords(String args) {
+        Parser dateTimeParser = new Parser();
+        List<DateGroup> dateGroups = dateTimeParser.parse(args);
+        StringBuilder builder = new StringBuilder(args);
+        for (DateGroup group : dateGroups) {
+            List<Date> dates = group.getDates();
+            String givenDateTimeString = group.getText();
+            for (Date date : dates) {
+                convertDatesAndTime(args, givenDateTimeString, builder, date);
+            }
+        }
+        String[] splitKeyWords = builder.toString().split("\\s");
+        return splitKeyWords;       
+    }
+    
+    /**
+     * Helper method to convert the dates and time in the args to TaskDate and TaskTime format
+     * @param args the full command arg string
+     * @param builder StringBuilder used for replacing the old format to converted ones
+     * @param givenDateTimeString the string parsed to obtain the date and time  
+     * @param date the date and time info obtained after parsing
+     */
+    private void convertDatesAndTime(String args, String givenDateTimeString, StringBuilder builder, Date date) {
+        String convertedDateTime = extractLocalDate(date);
+        String currentDate = new SimpleDateFormat(TaskDate.DATE_FORMAT_STRING).format(new Date());
+        if (extractLocalTime(date) != null) {
+            // if there is a time keyword inside ignore date if its equal to current date
+            if (convertedDateTime.equals(currentDate)) {
+                convertedDateTime = extractLocalTime(date);
+            } else {
+                convertedDateTime += " " + extractLocalTime(date); 
+            }                   
+        }
+        int index = args.indexOf(givenDateTimeString);                
+        if (builder.indexOf(givenDateTimeString) != -1) {
+            builder.replace(index, index + givenDateTimeString.length(), convertedDateTime);
+            // if have already replaced once, no need to replace again, 
+            //just append the converted date time in
+        } else {
+            builder.append(" " + convertedDateTime);
+        }
     }
 }
