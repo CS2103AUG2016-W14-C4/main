@@ -13,7 +13,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import seedu.taskitty.commons.core.LogsCenter;
-import seedu.taskitty.commons.events.ui.EventPanelSelectionChangedEvent;
 import seedu.taskitty.commons.events.ui.TaskPanelSelectionChangedEvent;
 import seedu.taskitty.model.task.ReadOnlyTask;
 
@@ -48,22 +47,22 @@ public class EventListPanel extends UiPart{
         this.placeHolderPane = pane;
     }
     
-    public static EventListPanel load(Stage primaryStage, AnchorPane eventListPlaceholder,
-            ObservableList<ReadOnlyTask> eventList) {
-        EventListPanel eventListPanel =
-                UiPartLoader.loadUiPart(primaryStage, eventListPlaceholder, new EventListPanel());
-        eventListPanel.configure(eventList);
-        return eventListPanel;
+    public static EventListPanel load(Stage primaryStage, AnchorPane personListPlaceholder,
+            ObservableList<ReadOnlyTask> personList) {
+        EventListPanel EventListPanel =
+                UiPartLoader.loadUiPart(primaryStage, personListPlaceholder, new EventListPanel());
+        EventListPanel.configure(personList);
+        return EventListPanel;
     }
 
-    private void configure(ObservableList<ReadOnlyTask> eventList) {
-        setConnections(eventList);
+    private void configure(ObservableList<ReadOnlyTask> personList) {
+        setConnections(personList);
         addToPlaceholder();
     }
     
-    private void setConnections(ObservableList<ReadOnlyTask> eventList) {
-        eventListView.setItems(eventList);
-        eventListView.setCellFactory(listView -> new EventListViewCell());
+    private void setConnections(ObservableList<ReadOnlyTask> personList) {
+        eventListView.setItems(personList);
+        eventListView.setCellFactory(listView -> new PersonListViewCell());
         setEventHandlerForSelectionChangeEvent();
     }
 
@@ -75,8 +74,8 @@ public class EventListPanel extends UiPart{
     private void setEventHandlerForSelectionChangeEvent() {
         eventListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                logger.fine("Selection in event list panel changed to : '" + newValue + "'");
-                raise(new EventPanelSelectionChangedEvent(newValue));
+                logger.fine("Selection in person list panel changed to : '" + newValue + "'");
+                raise(new TaskPanelSelectionChangedEvent(newValue));
             }
         });
     }
@@ -84,25 +83,26 @@ public class EventListPanel extends UiPart{
     public void scrollTo(int index) {
         Platform.runLater(() -> {
             eventListView.scrollTo(index);
-           eventListView.getSelectionModel().clearAndSelect(index);
+            eventListView.getSelectionModel().clearAndSelect(index);
         });
     }
 
-    class EventListViewCell extends ListCell<ReadOnlyTask> {
+    class PersonListViewCell extends ListCell<ReadOnlyTask> {
 
-        public EventListViewCell() {
+        public PersonListViewCell() {
         }
 
         @Override
-        protected void updateItem(ReadOnlyTask task, boolean empty) {
-            super.updateItem(task, empty);
+        protected void updateItem(ReadOnlyTask person, boolean empty) {
+            super.updateItem(person, empty);
 
-            if (empty || task == null) {
+            if (empty || person == null) {
                 setGraphic(null);
                 setText(null);
             } else {
-                setGraphic(TaskCard.load(task, getIndex() + 1).getLayout());
+                setGraphic(TaskCard.load(person, getIndex() + 1).getLayout());
             }
         }
     }
 }
+

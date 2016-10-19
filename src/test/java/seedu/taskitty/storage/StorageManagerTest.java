@@ -6,8 +6,14 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import seedu.taskitty.commons.events.model.DeadlineManagerChangedEvent;
+import seedu.taskitty.commons.events.model.EventManagerChangedEvent;
 import seedu.taskitty.commons.events.model.TaskManagerChangedEvent;
 import seedu.taskitty.commons.events.storage.DataSavingExceptionEvent;
+import seedu.taskitty.model.DeadlineManager;
+import seedu.taskitty.model.EventManager;
+import seedu.taskitty.model.ReadOnlyDeadlineManager;
+import seedu.taskitty.model.ReadOnlyEventManager;
 import seedu.taskitty.model.ReadOnlyTaskManager;
 import seedu.taskitty.model.TaskManager;
 import seedu.taskitty.model.UserPrefs;
@@ -34,7 +40,8 @@ public class StorageManagerTest {
 
     @Before
     public void setup() {
-        storageManager = new StorageManager(getTempFilePath("ab"), getTempFilePath("prefs"));
+        storageManager = new StorageManager(getTempFilePath("ab"), 
+                getTempFilePath("ab"), getTempFilePath("ab"), getTempFilePath("prefs"));
     }
 
 
@@ -75,9 +82,14 @@ public class StorageManagerTest {
     @Test
     public void handleAddressBookChangedEvent_exceptionThrown_eventRaised() throws IOException {
         //Create a StorageManager while injecting a stub that throws an exception when the save method is called
-        Storage storage = new StorageManager(new XmlAddressBookStorageExceptionThrowingStub("dummy"), new JsonUserPrefsStorage("dummy"));
+        Storage storage = new StorageManager(new XmlTaskManagerStorageExceptionThrowingStub("dummy"), 
+                new XmlDeadlineManagerStorageExceptionThrowingStub("dummy"), 
+                new XmlEventManagerStorageExceptionThrowingStub("dummy"),
+                new JsonUserPrefsStorage("dummy"));
         EventsCollector eventCollector = new EventsCollector();
         storage.handleTaskManagerChangedEvent(new TaskManagerChangedEvent(new TaskManager()));
+        storage.handleDeadlineManagerChangedEvent(new DeadlineManagerChangedEvent(new DeadlineManager()));
+        storage.handleEventManagerChangedEvent(new EventManagerChangedEvent(new EventManager()));
         assertTrue(eventCollector.get(0) instanceof DataSavingExceptionEvent);
     }
 
@@ -85,14 +97,44 @@ public class StorageManagerTest {
     /**
      * A Stub class to throw an exception when the save method is called
      */
-    class XmlAddressBookStorageExceptionThrowingStub extends XmlTaskManagerStorage{
+    class XmlTaskManagerStorageExceptionThrowingStub extends XmlTaskManagerStorage{
 
-        public XmlAddressBookStorageExceptionThrowingStub(String filePath) {
+        public XmlTaskManagerStorageExceptionThrowingStub(String filePath) {
             super(filePath);
         }
 
         @Override
         public void saveTaskManager(ReadOnlyTaskManager taskManager, String filePath) throws IOException {
+            throw new IOException("dummy exception");
+        }
+    }
+    
+    /**
+     * A Stub class to throw an exception when the save method is called
+     */
+    class XmlDeadlineManagerStorageExceptionThrowingStub extends XmlDeadlineManagerStorage{
+
+        public XmlDeadlineManagerStorageExceptionThrowingStub(String filePath) {
+            super(filePath);
+        }
+
+        @Override
+        public void saveDeadlineManager(ReadOnlyDeadlineManager taskManager, String filePath) throws IOException {
+            throw new IOException("dummy exception");
+        }
+    }
+    
+    /**
+     * A Stub class to throw an exception when the save method is called
+     */
+    class XmlEventManagerStorageExceptionThrowingStub extends XmlEventManagerStorage{
+
+        public XmlEventManagerStorageExceptionThrowingStub(String filePath) {
+            super(filePath);
+        }
+
+        @Override
+        public void saveEventManager(ReadOnlyEventManager taskManager, String filePath) throws IOException {
             throw new IOException("dummy exception");
         }
     }

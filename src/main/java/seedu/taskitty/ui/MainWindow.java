@@ -30,10 +30,9 @@ public class MainWindow extends UiPart {
     private Logic logic;
 
     // Independent Ui parts residing in this Ui container
-
+    private EventListPanel eventListPanel;
     private TaskListPanel taskListPanel;
     private DeadlineListPanel deadlineListPanel;
-    private EventListPanel eventListPanel;
     private ResultDisplay resultDisplay;
     private StatusBarFooter statusBarFooter;
     private CommandBox commandBox;
@@ -47,6 +46,9 @@ public class MainWindow extends UiPart {
     private String taskManagerName;
 
     @FXML
+    private AnchorPane eventListPanelPlaceholder;
+
+    @FXML
     private AnchorPane commandBoxPlaceholder;
 
     @FXML
@@ -57,9 +59,6 @@ public class MainWindow extends UiPart {
     
     @FXML
     private AnchorPane deadlineListPanelPlaceholder;
-
-    @FXML
-    private AnchorPane eventListPanelPlaceholder;
 
     @FXML
     private AnchorPane resultDisplayPlaceholder;
@@ -116,10 +115,9 @@ public class MainWindow extends UiPart {
     }
 
     void fillInnerParts() {
-
+        eventListPanel = EventListPanel.load(primaryStage, getEventListPlaceholder(), logic.getFilteredEventList());
         taskListPanel = TaskListPanel.load(primaryStage, getTaskListPlaceholder(), logic.getFilteredTaskList());
-        deadlineListPanel = DeadlineListPanel.load(primaryStage, getDeadlineListPlaceholder(), logic.getFilteredTaskList());
-        eventListPanel = EventListPanel.load(primaryStage, getEventListPlaceholder(), logic.getFilteredTaskList());
+        deadlineListPanel = DeadlineListPanel.load(primaryStage, getDeadlineListPlaceholder(), logic.getFilteredDeadlineList());
         resultDisplay = ResultDisplay.load(primaryStage, getResultDisplayPlaceholder());
         statusBarFooter = StatusBarFooter.load(primaryStage, getStatusbarPlaceholder(), config.getTaskManagerFilePath());
         commandBox = CommandBox.load(primaryStage, getCommandBoxPlaceholder(), resultDisplay, logic);
@@ -207,9 +205,12 @@ public class MainWindow extends UiPart {
     public DeadlineListPanel getDeadlineListPanel() {
         return this.deadlineListPanel;
     }
-    
-    public EventListPanel getEventListPanel() {
-        return this.eventListPanel;
-    }
 
+//    public void loadTaskPage(ReadOnlyTask task) {
+//        browserPanel.loadTaskPage(task);
+//    }
+//
+//    public void releaseResources() {
+//        browserPanel.freeResources();
+//    }
 }
