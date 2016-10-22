@@ -36,7 +36,7 @@ public class MainMenuHandle extends GuiHandle {
     }
     
     public void useUndoCommandUsingAccelerator() {
-        useAccelerator("Ctrl", "Shift", "U");
+        useAccelerator("Ctrl", "Shift", "Z");
         guiRobot.sleep(500);
     }
     
