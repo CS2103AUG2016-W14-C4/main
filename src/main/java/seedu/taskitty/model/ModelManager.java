@@ -106,7 +106,6 @@ public class ModelManager extends ComponentManager implements Model {
     @Override
     public synchronized void addTask(Task task) throws UniqueTaskList.DuplicateTaskException {
         taskManager.addTask(task);
-        updateFilteredListToShowAll();
         indicateTaskManagerChanged();
     }
     
@@ -149,12 +148,11 @@ public class ModelManager extends ComponentManager implements Model {
    	    taskManager.addTask(task);
         indicateTaskManagerChanged();
         taskManager.removeTask(target);
-        updateFilteredListToShowAll();
         indicateTaskManagerChanged();
     }
    	//@@author
 
-    //=========== Filtered Person List Accessors ===============================================================
+    //=========== Filtered Task List Accessors ===============================================================
 
     @Override
     public UnmodifiableObservableList<ReadOnlyTask> getTaskList() {
@@ -197,20 +195,18 @@ public class ModelManager extends ComponentManager implements Model {
     }
     
     @Override
-    public void initialiseFilteredList() {
-    	updateFilteredDateTaskList(DateUtil.createCurrentDate(), false);
+    public void updateToDefaultList() {
+    	allTasks.setPredicate(p -> !p.getIsDone() && (p.isTodo() || p.isDeadline() || isEventAndIsNotBeforeToday(p)));
+    	filteredTodos.setPredicate(p -> !p.getIsDone());
+    	filteredDeadlines.setPredicate(p -> !p.getIsDone());
+    	filteredEvents.setPredicate(p -> !p.getIsDone() && isEventAndIsNotBeforeToday(p));
     }
 
 	@Override
-	public void updateFilteredDateTaskList(LocalDate date, boolean hasDate) {
-		allTasks.setPredicate(p -> p.isTodo() || isDeadlineAndIsNotAfterDate(p, date, hasDate) || isEventAndDateIsWithinEventPeriod(p, date));
+	public void updateFilteredDateTaskList(LocalDate date) {
+		allTasks.setPredicate(p -> p.isTodo() || isDeadlineAndIsNotAfterDate(p, date) || isEventAndDateIsWithinEventPeriod(p, date));
 		filteredTodos.setPredicate(null);
-		if (hasDate) {
-			filteredDeadlines.setPredicate(p -> isDeadlineAndIsNotAfterDate(p, date, hasDate));
-		}
-		else {
-		    filteredDeadlines.setPredicate(null);
-		}
+		filteredDeadlines.setPredicate(p -> isDeadlineAndIsNotAfterDate(p, date));
 		filteredEvents.setPredicate(p -> isEventAndDateIsWithinEventPeriod(p, date));
 	}
 	
@@ -266,7 +262,8 @@ public class ModelManager extends ComponentManager implements Model {
         NameQualifier(Set<String> nameKeyWords) {
             this.nameKeyWords = nameKeyWords;
         }
-
+        
+        //@@author A0130853L
         @Override
         public boolean run(ReadOnlyTask person) {
             return nameKeyWords.stream()
@@ -274,7 +271,8 @@ public class ModelManager extends ComponentManager implements Model {
                     .findAny()
                     .isPresent();
         }
-
+        
+        //@@author
         @Override
         public String toString() {
             return "name=" + String.join(", ", nameKeyWords);
@@ -291,13 +289,10 @@ public class ModelManager extends ComponentManager implements Model {
      * @param date
      * @return the evaluated boolean expression
      */
-    private boolean isDeadlineAndIsNotAfterDate(Task task, LocalDate date, boolean hasDate) {
-		if (hasDate) {
-			return task.isDeadline() && !task.getPeriod().getEndDate().getDate().isAfter(date);
-		} else {
-			return task.isDeadline();
-		}
+    private boolean isDeadlineAndIsNotAfterDate(Task task, LocalDate date) {
+		return task.isDeadline() && !task.getPeriod().getEndDate().getDate().isAfter(date);
 	}
+    
 	/**
 	 * Evaluates if the task is an event and the specified date is within the event period.
 	 * @param task
@@ -307,7 +302,17 @@ public class ModelManager extends ComponentManager implements Model {
 	private boolean isEventAndDateIsWithinEventPeriod(Task task, LocalDate date) {
 		return task.isEvent() && !(task.getPeriod().getEndDate().getDate().isBefore(date) || task.getPeriod().getStartDate().getDate().isAfter(date));
 	}
-
+	
+	/** 
+	 * Evaluates if the task is an event and event is from today onwards.
+	 * @param task
+	 *@return the evaluated boolean expression
+	 */
+	private boolean isEventAndIsNotBeforeToday(Task task) {
+		LocalDate today = DateUtil.createCurrentDate();
+		return task.isEvent() && !(task.getPeriod().getEndDate().getDate().isBefore(today));
+	}
+	
 	//@@author A0139052L
     /**
      *  returns the Task Manager from the previous state
@@ -337,4 +342,5 @@ public class ModelManager extends ComponentManager implements Model {
     private boolean hasPreviousValidCommand() {
         return !historyCommands.isEmpty();
     }
+
 }
