@@ -141,6 +141,7 @@ public class Task implements ReadOnlyTask, Comparable<Task> {
 	public TaskPeriod getPeriod() {
 	    return period;
 	}
+	
 	//@@author A0130853L
 	@Override
 	public boolean getIsDone() {
@@ -174,7 +175,7 @@ public class Task implements ReadOnlyTask, Comparable<Task> {
 		return isOver;
 	}
 	
-	//@@author
+	//@@author A0139052L
 	@Override
     public int compareTo(Task taskToCompare) {
 	    // sort all tasks that are done to the back of the list
