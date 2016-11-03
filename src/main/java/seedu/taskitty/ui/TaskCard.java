@@ -7,15 +7,13 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import seedu.taskitty.commons.util.DateTimeUtil;
 import seedu.taskitty.model.task.ReadOnlyTask;
+import seedu.taskitty.model.task.Task;
 import seedu.taskitty.model.task.TaskDate;
 import seedu.taskitty.model.task.TaskTime;
 
 public class TaskCard extends UiPart {
 
     private static final String FXML = "TaskListCard.fxml";
-    private static final String INDEX_PREFIX_TODO = "T";
-    private static final String INDEX_PREFIX_DEADLINE = "D";
-    private static final String INDEX_PREFIX_EVENT = "E";
     
     private static final int COLUMN_DATETIME = 2;
     private static final int COLUMN_DATETIME_SIZE_DEADLINE = 120;
@@ -74,7 +72,7 @@ public class TaskCard extends UiPart {
      * If the task is done, panel will use .done css.
      */
     private void initializeTodo() {
-        displayBasicTask(INDEX_PREFIX_TODO);
+        displayBasicTask(Task.PREFIX_TODO);
         hideStartDateTime();
         hideEndDateTime();
         setCardGridDateTimeColumnWidth(COLUMN_DATETIME_SIZE_TODO);
@@ -97,7 +95,7 @@ public class TaskCard extends UiPart {
      * If the task is overdue, panel will use .overdue css.
      */
     private void initializeDeadline() {
-        displayBasicTask(INDEX_PREFIX_DEADLINE);
+        displayBasicTask(Task.PREFIX_DEADLINE);
         displayEndDateTime();
         hideStartDateTime();
         setCardGridDateTimeColumnWidth(COLUMN_DATETIME_SIZE_DEADLINE);
@@ -128,7 +126,7 @@ public class TaskCard extends UiPart {
      * If the task is done, panel will use .done css.
      */
     private void initializeEvent() {
-        displayBasicTask(INDEX_PREFIX_EVENT);
+        displayBasicTask(Task.PREFIX_EVENT);
         displayStartDateTime();
         displayEndDateTime();
         
