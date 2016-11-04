@@ -221,4 +221,9 @@ public class UniqueTaskList implements Iterable<Task> {
                 && this.internalList.equals(
                 ((UniqueTaskList) other).internalList));
     }
+
+    @Override
+    public Iterator<Task> iterator() {
+        return internalList.iterator();
+    }
 }
