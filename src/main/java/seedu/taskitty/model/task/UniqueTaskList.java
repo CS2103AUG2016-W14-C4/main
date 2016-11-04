@@ -209,12 +209,6 @@ public class UniqueTaskList implements Iterable<Task> {
         return internalList.filtered(p -> p.getPeriod().getNumArgs() == filter);
     }
     
-    //@@author
-    @Override
-    public Iterator<Task> iterator() {
-        return internalList.iterator();
-    }
-    
     //@@author A0130853L
     public FilteredList<Task> getFilteredTaskList() {
         return internalList.filtered(null);
@@ -226,10 +220,5 @@ public class UniqueTaskList implements Iterable<Task> {
                 || (other instanceof UniqueTaskList // instanceof handles nulls
                 && this.internalList.equals(
                 ((UniqueTaskList) other).internalList));
-    }
-
-    @Override
-    public int hashCode() {
-        return internalList.hashCode();
     }
 }
