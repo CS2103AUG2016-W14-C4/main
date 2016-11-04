@@ -95,11 +95,6 @@ public class TaskTime {
         
         return time.equals(other);
     }
-
-    @Override
-    public int hashCode() {
-        return time.hashCode();
-    }
     
     public LocalTime getTime() {
         return time;

@@ -94,16 +94,17 @@ public class TestTaskList {
         return size(' ');
     }
     
-    public List<TestTask> getCategoryList(char category) {
+    public List<TestTask> getCategoryList(char categoryChar) {
+        String category = Character.toString(categoryChar);
         switch (category) {
         
-        case(Task.TODO_CATEGORY_CHAR) :
+        case(Task.PREFIX_TODO) :
             return todoList;
         
-        case (Task.DEADLINE_CATEGORY_CHAR) :
+        case (Task.PREFIX_DEADLINE) :
             return deadlineList;
             
-        case (Task.EVENT_CATEGORY_CHAR) :
+        case (Task.PREFIX_EVENT) :
             return eventList;
             
         default :

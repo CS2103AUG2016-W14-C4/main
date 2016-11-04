@@ -13,18 +13,18 @@ public class TaskUtil {
      * Returns the specified index in the {@code command} IF a valid category character was given.
      *   else return the default index
      */
-    public static int getCategoryIndex(char category) {
+    public static int getCategoryIndex(char categoryChar) {
         
-        category = Character.toLowerCase(category);
+        String category = Character.toString(categoryChar).toLowerCase();
         switch(category) {
         
-            case(Task.TODO_CATEGORY_CHAR) :
+            case(Task.PREFIX_TODO) :
                 return Task.TODO_CATEGORY_INDEX;
             
-            case(Task.DEADLINE_CATEGORY_CHAR): 
+            case(Task.PREFIX_DEADLINE): 
                 return Task.DEADLINE_CATEGORY_INDEX;
             
-            case(Task.EVENT_CATEGORY_CHAR): 
+            case(Task.PREFIX_EVENT): 
                 return Task.EVENT_CATEGORY_INDEX;
             
             default: 

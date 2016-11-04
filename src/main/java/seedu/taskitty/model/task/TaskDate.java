@@ -94,11 +94,6 @@ public class TaskDate {
         
         return date.equals(other);
     }
-
-    @Override
-    public int hashCode() {
-        return date.hashCode();
-    }
     
     public LocalDate getDate() {
     	return date;

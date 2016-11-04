@@ -27,10 +27,11 @@ public class Task implements ReadOnlyTask, Comparable<Task> {
     public static final int EVENT_COMPONENT_INDEX_END_TIME = 4;
     public static final int EVENT_COMPONENT_COUNT = 5;
     
-    public static final char TODO_CATEGORY_CHAR = 't';
-    public static final char DEADLINE_CATEGORY_CHAR = 'd';
-    public static final char EVENT_CATEGORY_CHAR = 'e';
-    public static final String[] CATEGORIES = {"t", "d", "e"};
+    public static final String PREFIX_TODO = "T";
+    public static final String PREFIX_DEADLINE = "D";
+    public static final String PREFIX_EVENT = "E";
+    public static final String[] CATEGORIES = {
+            PREFIX_TODO, PREFIX_DEADLINE, PREFIX_EVENT };
 
     public static final int DEFAULT_CATEGORY_INDEX = 0;
     public static final int TODO_CATEGORY_INDEX = 0;
@@ -121,12 +122,6 @@ public class Task implements ReadOnlyTask, Comparable<Task> {
         return other == this // short circuit if same object
                 || (other instanceof ReadOnlyTask // instanceof handles nulls
                 && this.isSameStateAs((ReadOnlyTask) other));
-    }
-
-    @Override
-    public int hashCode() {
-        // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, tags);
     }
 
     @Override
